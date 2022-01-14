@@ -34,8 +34,9 @@ def twitter_scraper():
     '''
     df = pd.DataFrame() 
  
-    date = datetime.datetime(2021, 7, 24, 0, 0, 0) # start date
-    final_date = date + datetime.timedelta(days=31) # end date
+    date = datetime.datetime(2021, 4, 23, 0, 0, 0) # start date
+    # final_date = date + datetime.timedelta(days=323) # end date
+    final_date = datetime.datetime(2022, 1, 14, 0, 0, 0)
 
     tweet_count = 0 # initializes tweet count 
     next_token = "" # initializes next token
@@ -43,18 +44,18 @@ def twitter_scraper():
     
     while date != final_date:
         start_time = datetime.datetime.strftime(date, r"%Y-%m-%dT%H:%M:%SZ")
-        end_date = date + datetime.timedelta(hours=12)
+        end_date = date + datetime.timedelta(days=1) 
         end_time = datetime.datetime.strftime(end_date, r"%Y-%m-%dT%H:%M:%SZ")
 
         # PUT QUERY HERE 
         if next_token == "": 
-            query_params = {'query': 'PUT QUERY HERE lang:en -has:links -is:retweet -is:reply', 
+            query_params = {'query': 'QUERY lang:en -has:links -is:retweet -is:reply', 
                             'max_results': '100', 
                             'start_time': start_time, 
                             'end_time': end_time, 
                             'tweet.fields': 'created_at,author_id'}
         else: 
-            query_params = {'query': '("PUT QUERY HERE lang:en -has:links -is:retweet -is:reply', 
+            query_params = {'query': 'QUERY lang:en -has:links -is:retweet -is:reply', 
                         'max_results': '100', 
                         'start_time': start_time, 
                         'end_time': end_time, 
@@ -73,7 +74,7 @@ def twitter_scraper():
             tweet_count += len(df1)
             print('Tweets Gathered:', str(len(df)))
             # CHANGE FILE NAME HERE 
-            df.to_csv('.//data/raw/raw_df.csv', index = False) # converts df to csv
+            df.to_csv('.//data/raw/RYUJIN_tweets.csv', index = False) # converts df to csv
 
         if 'next_token' in json_response['meta']: 
             # on next loop, will use the same query as the prev loop but goes
@@ -81,10 +82,10 @@ def twitter_scraper():
             next_token = json_response['meta']['next_token']
         else:
             # goes on to next query
-            date += timedelta(hours=12) # increases time by x hours
+            date += timedelta(days=1) # increases time by x hours
             next_token = ""
 
-        time.sleep(6) 
+        time.sleep(5) 
 
         # # TO AVOID HITTING RATE LIMIT
         # # not necessary unless multiple ppl using api at once 

@@ -1,10 +1,10 @@
 import sys
-import json
 import pandas as pd
 
 sys.path.insert(0, 'src') # add src to paths
 
 from eda import calculate_stats
+from toxicity_script import toxicityFunc
 
 def main(targets):
     # data_config = json.load(open('config/data-params.json'))
@@ -14,22 +14,24 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/LUCAS_rawtweets.csv")
+        data = pd.read_csv(".//data/JAEMIN_rawtweets.csv")
 
     if 'eda' in targets:
         calculate_stats(data)
 
-    # if 'test' in targets:
-    #     with open('config/data-params.json') as fh:
-    #         data_cfg = json.load(fh)
+    if 'toxicity' in targets:
+        # run on first 20,000 tweets
+        toxicityFunc(data[:20000], "JAEMIN")
 
-    #     data = etl.import_test_data(**data_cfg)
+    if 'test' in targets:
+        # with open('config/data-params.json') as fh:
+        #     data_cfg = json.load(fh)
 
-    #     # rq 1 function
-    #     calculate_stats(data, test=True)
+        # data = etl.import_data(**data_cfg)
+        data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
 
-    #     # rq 2 function
-    #     research_q2(data, test=True)
+        # rq 1 function
+        calculate_stats(data, test=True)
 
 if __name__ == '__main__':
     targets = sys.argv[1:]
