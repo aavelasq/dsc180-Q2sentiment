@@ -110,7 +110,6 @@ def combine_raw_data():
     
     final_df = pd.concat(df_list).drop_duplicates().reset_index(drop=True)
     final_df.to_csv(".//data/raw/rawtweets.csv", index=False)
-    print(final_df)
 
 def main():
     twitter_scraper() # runs twitter scraper func 
