@@ -63,9 +63,9 @@ def toxicityFunc(data, target):
             time.sleep(1)
 
         # print statements
-        print("index: " + str(index))
-        tweet_count += 1
-        print(tweet_count)
+        # print("index: " + str(index))
+        # tweet_count += 1
+        # print(tweet_count)
 
         # add to main dataframe 
         temp_df = pd.DataFrame({'text': [tweet_text], 'created_at': [tweet_date], 
