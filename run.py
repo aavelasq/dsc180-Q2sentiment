@@ -20,8 +20,8 @@ def main(targets):
         calculate_stats(data)
 
     if 'toxicity' in targets:
-        # run on first 20,000 tweets
-        toxicityFunc(data[:20000], "JAEMIN")
+        # run on 20,000 to 70,000 tweets
+        toxicityFunc(data[20000:70000], "JAEMIN")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:
