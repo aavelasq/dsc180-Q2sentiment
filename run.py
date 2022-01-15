@@ -14,14 +14,18 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/JAEMIN_rawtweets.csv")
+        data = pd.read_csv(".//data/raw/JAEMIN_rawtweets.csv")
+
+    if 'size' in targets:
+        df = pd.read_csv(".//data/temp/JAEMIN_toxicVals2.csv")
+        print(len(df))
 
     if 'eda' in targets:
         calculate_stats(data)
 
     if 'toxicity' in targets:
-        # run on 20,000 to 70,000 tweets
-        toxicityFunc(data[20000:70000], "JAEMIN")
+        # run on x to y tweets
+        toxicityFunc(data[65000:110000], "JAEMIN")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:

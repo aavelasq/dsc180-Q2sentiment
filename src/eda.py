@@ -3,11 +3,12 @@ import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
+import re
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
-cancellation_date = datetime.datetime(2021, 10, 23)
-target_indiv = "GISELLE"
-outdir = ".//data/out/kpop_giselle"
+cancellation_date = datetime.datetime(2021, 8, 24)
+target_indiv = "JAEMIN"
+outdir = ".//data/out/kpop_jaemin"
 tempdir = ".//data/temp"
 
 def convert_dates(data):
@@ -217,7 +218,8 @@ def calcToxicityOverTime(file_path, cancel_date):
     line_df = inital_df.copy()
     line_df['created_at'] = line_df['created_at'].apply(
             lambda x: count_days(x, cancel_date)).dt.days
-    groupedUsers = line_df[['created_at', 'toxicity']].groupby(by='created_at')
+    groupedUsers = line_df[['created_at', 'toxicity', 'severe_toxicity', 
+        'insult', 'profanity']].groupby(by='created_at')
 
     # creates and saves line graphs 
     plt.clf()
@@ -229,22 +231,33 @@ def calcToxicityOverTime(file_path, cancel_date):
     plt.clf()
     createToxicityLines(groupedUsers, 'profanity')
 
+# def testFunction(df):
+#     count = 0
+#     emojis = re.compile('\U0001F49A') #green heart
+
+#     for index,row in df.iterrows():
+#         text = row['text']
+#         if emojis.search(text):
+#             count += 1
+
+#     print(count)
+
 def calculate_stats(data, test=False):
     df = convert_dates(data)
 
     if test == False:
         # create csvs out of data
-        userActivity_df = user_activity_levels(df, cancellation_date)
-        # counts number of tweets before and after deplatforming 
-        totalTweets = numOfTweets(df, cancellation_date)
+        # userActivity_df = user_activity_levels(df, cancellation_date)
+        # # counts number of tweets before and after deplatforming 
+        # totalTweets = numOfTweets(df, cancellation_date)
 
-        out_path = os.path.join(outdir, "GISELLE_numOfTweetsBefAft.csv")
-        totalTweets.to_csv(out_path)
+        # out_path = os.path.join(outdir, "GISELLE_numOfTweetsBefAft.csv")
+        # totalTweets.to_csv(out_path)
 
-        # create graphs + save as pngs
-        create_userActivity_graph(userActivity_df)
+        # # create graphs + save as pngs
+        # create_userActivity_graph(userActivity_df)
 
-        calcToxicityOverTime("./data/temp/GISELLE_toxicVals.csv", cancellation_date)
+        calcToxicityOverTime("./data/temp/JAEMIN_FINALtoxicVals.csv", cancellation_date)
     else:
         # userActivity_df = user_activity_levels(df, test_date)
         # totalTweets = numOfTweets(df, test_date)
