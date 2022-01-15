@@ -25,7 +25,7 @@ def main(targets):
 
     if 'toxicity' in targets:
         # run on x to y tweets
-        toxicityFunc(data[65000:110000], "JAEMIN")
+        toxicityFunc(data[110000:], "JAEMIN")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:
