@@ -14,7 +14,7 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/JAEMIN_rawtweets.csv")
+        data = pd.read_csv(".//data/JAEMIN_rawtweets.csv")
 
     if 'size' in targets:
         df = pd.read_csv(".//data/temp/JAEMIN_toxicVals2.csv")
