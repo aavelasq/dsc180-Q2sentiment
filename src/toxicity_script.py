@@ -2,7 +2,6 @@ import pandas as pd
 import apikeys # apikey file
 from googleapiclient import discovery
 import time
-from eda import convert_dates
 
 tempdir = ".//data/temp/"
 googleAPIKEY = apikeys.api_keys['googleKey']
@@ -13,8 +12,6 @@ def toxicityFunc(data, target):
     probabilities using Google's Perspective API for each tweet
     in a dataset
     '''
-    df = convert_dates(data)
-
     client = discovery.build(
             "commentanalyzer",
             "v1alpha1",
@@ -22,14 +19,15 @@ def toxicityFunc(data, target):
             discoveryServiceUrl="https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1",
             static_discovery=False,
         )
-    
+
     tweet_count = 0 
     main_df = pd.DataFrame()
     tweet_dict = {}
 
-    for index, row in df.iterrows(): 
+    for index, row in data.iterrows(): 
         tweet_text = row['text']
         tweet_date = row['created_at']
+        tweet_id = row['id']
 
         if tweet_text in tweet_dict.keys():
             # if there are tweets with the same text/copypasta tweets
@@ -68,12 +66,10 @@ def toxicityFunc(data, target):
         # print(tweet_count)
 
         # add to main dataframe 
-        temp_df = pd.DataFrame({'text': [tweet_text], 'created_at': [tweet_date], 
+        temp_df = pd.DataFrame({'text': [tweet_text], 'created_at': [tweet_date], 'id': [tweet_id],
         'toxicity': [toxicity_val], 'severe_toxicity': [severe_val], 
         'insult': [insult_val], 'profanity': [profanity_val]})
         main_df = pd.concat([main_df, temp_df]) # adds on to existing dataframe of tweets
 
-        file_name = tempdir + target + '_toxicVals4.csv'
+        file_name = tempdir + target + '_toxicVals1.csv'
         main_df.to_csv(file_name, index=False)
-
-    print(len(df))

@@ -1,3 +1,4 @@
+from imp import init_builtin
 import pandas as pd 
 import datetime
 import seaborn as sns
@@ -87,6 +88,7 @@ def createToxicityLines(df, attribute_type):
         toxicity_df = toxicityLevels.reset_index().rename(
             columns={"created_at": "Date", "toxicity": "Mean Toxicity"})
 
+        plt.figure(figsize = (10,5))
         sns.lineplot(data=toxicity_df, x="Date", y="Mean Toxicity")
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Toxicity Levels")
@@ -100,6 +102,7 @@ def createToxicityLines(df, attribute_type):
         severe_toxicity_df = severe_toxicityLevels.reset_index().rename(
             columns={"created_at": "Date", "severe_toxicity": "Mean Severe Toxicity"})
 
+        plt.figure(figsize = (10,5))
         sns.lineplot(data=severe_toxicity_df, x="Date", y="Mean Severe Toxicity")
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Severe Toxicity Levels")
@@ -113,6 +116,7 @@ def createToxicityLines(df, attribute_type):
         insult_df = insultLevels.reset_index().rename(
             columns={"created_at": "Date", "insult": "Mean Insult Levels"})
 
+        plt.figure(figsize = (10,5))
         sns.lineplot(data=insult_df, x="Date", y="Mean Insult Levels")
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Insult Levels")
@@ -126,6 +130,7 @@ def createToxicityLines(df, attribute_type):
         profanity_df = profanityLevels.reset_index().rename(
             columns={"created_at": "Date", "profanity": "Mean Profanity Levels"})
 
+        plt.figure(figsize = (10,5))
         sns.lineplot(data=profanity_df, x="Date", y="Mean Profanity Levels")
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Profanity Levels")
@@ -141,7 +146,7 @@ def month_func(month_num):
     month_li = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     
-    return month_li[month_num + 1]
+    return month_li[month_num - 1]
 
 def createToxicityBoxPlots(df, attribute_type):
     '''
@@ -242,8 +247,22 @@ def calcToxicityOverTime(file_path, cancel_date):
 
 #     print(count)
 
+def cleanData(df):
+    '''
+    remove tweets that start w/ RT (as it usually indicates that the tweet
+    contains copypasta text and is retweeted from someone else)
+    '''
+    data = df.copy()
+    data['boolean'] = data['text'].apply(lambda x: True if x[:2] == 'RT' else False)
+    new_df = data[data['boolean'] == False].reset_index(drop=True)
+    new_df = new_df.drop(columns=['boolean'])
+
+    file_path = ""
+    new_df.to_csv(file_path, index=False)
+    print(new_df)
+
 def calculate_stats(data, test=False):
-    df = convert_dates(data)
+    # df = convert_dates(data)
 
     if test == False:
         # create csvs out of data

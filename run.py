@@ -14,7 +14,7 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/JAEMIN_rawtweets.csv")
+        data = pd.read_csv(".//data/LUCAS_rawtweets.csv")
 
     if 'size' in targets:
         df = pd.read_csv(".//data/temp/JAEMIN_toxicVals2.csv")
@@ -25,14 +25,14 @@ def main(targets):
 
     if 'toxicity' in targets:
         # run on x to y tweets
-        toxicityFunc(data[110000:], "JAEMIN")
+        toxicityFunc(data, "LUCAS")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
+        # data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
 
         # rq 1 function
         calculate_stats(data, test=True)
