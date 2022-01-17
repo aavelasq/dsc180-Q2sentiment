@@ -71,5 +71,5 @@ def toxicityFunc(data, target):
         'insult': [insult_val], 'profanity': [profanity_val]})
         main_df = pd.concat([main_df, temp_df]) # adds on to existing dataframe of tweets
 
-        file_name = tempdir + target + '_toxicVals2.csv'
+        file_name = tempdir + target + '_toxicVals3.csv'
         main_df.to_csv(file_name, index=False)
