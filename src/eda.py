@@ -8,8 +8,8 @@ import re
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
 cancellation_date = datetime.datetime(2021, 8, 24)
-target_indiv = "JAEMIN"
-outdir = ".//data/out/kpop_jaemin"
+target_indiv = "name"
+outdir = ".//data/out/"
 tempdir = ".//data/temp"
 
 def convert_dates(data):
@@ -267,7 +267,7 @@ def calculate_stats(data, test=False):
         # # create graphs + save as pngs
         # create_userActivity_graph(userActivity_df)
 
-        calcToxicityOverTime("./data/temp/JAEMIN_FINALtoxicVals.csv", cancellation_date)
+        calcToxicityOverTime("./data/temp/", cancellation_date)
     else:
         # userActivity_df = user_activity_levels(df, test_date)
         # totalTweets = numOfTweets(df, test_date)

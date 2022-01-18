@@ -12,7 +12,7 @@ bearer_token = twitterkeys.apikeys['bearer_token']
 
 search_url = "https://api.twitter.com/2/tweets/search/all"
 # save tweets dataframe to this location
-out_path = ".//data/raw/kpop_giselle/GISELLE_moretweets.csv"
+out_path = ".//data/raw/"
 
 def bearer_oauth(r):
     """
@@ -53,13 +53,13 @@ def twitter_scraper():
 
         # PUT QUERY HERE 
         if next_token == "": 
-            query_params = {'query': '"giselle" ("uchinaga" OR "kpop" OR "k-pop" OR "bbl" OR "bubble" OR "MYs" OR "MY" OR "aeri" OR "n word" OR "racist" OR "aespa" OR "#aespa" OR "#gisellenword" OR "giselleaespa" OR "#Giselle_OUT" OR "#gisellenwordspace" OR "#giselleapologize" OR "#aespa_is_FOUR") -rhop -vote -voting -MD -nts -wts -wtt -wtb -pcs -trade lang:en -has:links -is:retweet -is:reply', 
+            query_params = {'query': 'QUERY lang:en -has:links -is:retweet -is:reply', 
                             'max_results': '100', 
                             'start_time': start_time, 
                             'end_time': end_time, 
                             'tweet.fields': 'created_at,author_id'}
         else: 
-            query_params = {'query': '"giselle" ("uchinaga" OR "kpop" OR "k-pop" OR "bbl" OR "bubble" OR "MYs" OR "MY" OR "aeri" OR "n word" OR "racist" OR "aespa" OR "#aespa" OR "#gisellenword" OR "giselleaespa" OR "#Giselle_OUT" OR "#gisellenwordspace" OR "#giselleapologize" OR "#aespa_is_FOUR") -rhop -vote -voting -MD -nts -wts -wtt -wtb -pcs -trade lang:en -has:links -is:retweet -is:reply', 
+            query_params = {'query': 'QUERY lang:en -has:links -is:retweet -is:reply', 
                         'max_results': '100', 
                         'start_time': start_time, 
                         'end_time': end_time, 
@@ -77,6 +77,7 @@ def twitter_scraper():
             
             tweet_count += len(df1)
             print('Tweets Gathered:', str(len(df)))
+
             # CHANGE FILE NAME HERE 
             df.to_csv(out_path, index = False) # converts df to csv
 
@@ -89,14 +90,7 @@ def twitter_scraper():
             date += timedelta(days=1) # increases time by x hours
             next_token = ""
 
-        time.sleep(5) 
-
-        # # TO AVOID HITTING RATE LIMIT
-        # # not necessary unless multiple ppl using api at once 
-        # if num_requests >= 295:
-        #     print("SLEEPING----------")
-        #     num_requests = 0
-        #     time.sleep(900) # pauses for 15 mins
+        time.sleep(5) # num of seconds between each query
 
         print()
 
