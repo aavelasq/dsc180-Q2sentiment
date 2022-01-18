@@ -8,8 +8,8 @@ import re
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
 cancellation_date = datetime.datetime(2021, 8, 24)
-target_indiv = "JAEMIN"
-outdir = ".//data/out/kpop_jaemin"
+target_indiv = "name"
+outdir = ".//data/out/"
 tempdir = ".//data/temp"
 
 def convert_dates(data):
@@ -49,7 +49,8 @@ def user_activity_levels(data, cancel_date):
         lambda x: count_days(x, cancel_date)).dt.days
 
     # convert df to csv
-    out_path = os.path.join(tempdir, "GISELLE_userActivityLevels.csv")
+    file_path = target_indiv + "_userActivityLevels.csv"
+    out_path = os.path.join(tempdir, file_path)
     df.to_csv(out_path)
 
     return df
@@ -62,7 +63,8 @@ def create_userActivity_graph(df):
     plt.xlabel('# Days Before and After Cancellation')
     plt.title("Volume of Tweets")
 
-    out_path = os.path.join(outdir, "GISELLE_userActivityPlot.png")
+    file_path = target_indiv + "_userActivityPlot.png"
+    out_path = os.path.join(outdir, file_path)
     plt.savefig(out_path, bbox_inches='tight')
 
 def numOfTweets(df, cancel_date):
@@ -236,21 +238,10 @@ def calcToxicityOverTime(file_path, cancel_date):
     plt.clf()
     createToxicityLines(groupedUsers, 'profanity')
 
-# def testFunction(df):
-#     count = 0
-#     emojis = re.compile('\U0001F49A') #green heart
-
-#     for index,row in df.iterrows():
-#         text = row['text']
-#         if emojis.search(text):
-#             count += 1
-
-#     print(count)
-
 def cleanData(df):
     '''
     remove tweets that start w/ RT (as it usually indicates that the tweet
-    contains copypasta text and is retweeted from someone else)
+    contains copypasta text and/or is retweeted from someone else)
     '''
     data = df.copy()
     data['boolean'] = data['text'].apply(lambda x: True if x[:2] == 'RT' else False)
@@ -276,7 +267,7 @@ def calculate_stats(data, test=False):
         # # create graphs + save as pngs
         # create_userActivity_graph(userActivity_df)
 
-        calcToxicityOverTime("./data/temp/JAEMIN_FINALtoxicVals.csv", cancellation_date)
+        calcToxicityOverTime("./data/temp/", cancellation_date)
     else:
         # userActivity_df = user_activity_levels(df, test_date)
         # totalTweets = numOfTweets(df, test_date)
