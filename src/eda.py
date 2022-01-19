@@ -8,9 +8,9 @@ import re
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
 cancellation_date = datetime.datetime(2021, 8, 24)
-target_indiv = "name"
+target_indiv = "RYUJIN"
 outdir = ".//data/out/"
-tempdir = ".//data/temp"
+tempdir = ".//data/temp/"
 
 def convert_dates(data):
     '''
