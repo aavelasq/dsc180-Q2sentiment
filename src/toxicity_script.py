@@ -58,7 +58,7 @@ def toxicityFunc(data, target):
 
             # assign toxicity value to text in dictionary
             tweet_dict[tweet_text] = [toxicity_val, severe_val, insult_val, profanity_val]
-            time.sleep(0.0005)
+            time.sleep(0.001)
 
         # print statements
         # print("index: " + str(index))
