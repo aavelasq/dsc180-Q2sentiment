@@ -1,18 +1,29 @@
-from imp import init_builtin
-from turtle import xcor
 import pandas as pd 
 import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-import re
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
-maleKpop_cancel_date = datetime.datetime(2021, 8, 24)
-femaleKpop_cancel_date = datetime.datetime(2021, 10, 23)
-target_indiv = "RYUJIN"
+maleKpop_cancel_date = datetime.datetime(2021, 8, 24) # LUCAS
+femaleKpop_cancel_date = datetime.datetime(2021, 10, 23) # GISELLE
+
+maleHH_cancel_date = datetime.datetime(2021, 7, 25) # DABABY
+femaleHH_cancel_date = datetime.datetime(2021, 9, 13) # NICKI
+
+malePop_cancel_date = datetime.datetime(2021, 8, 28) # ZAYN
+femalePop_cancel_date = datetime.datetime(2020, 5, 25) # DOJA CAT
+
+# list of cancelled individuals 
 male_kpop_list = ['JAEMIN', 'LUCAS']
 female_kpop_list = ['GISELLE', 'RYUJIN']
+
+male_hiphop_list = ['DABABY', 'LIL_BABY']
+female_hiphop_list = ['NICKI', 'SAWEETIE']
+
+male_pop_list = ['ZAYN', 'HARRY']
+female_pop_list = ['DOJA', 'ADELE']
+
 base_outdir = ".//data/out/"
 tempdir = ".//data/temp/"
 
