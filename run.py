@@ -14,7 +14,7 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/GISELLE_rawtweets.csv")
+        data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
 
     if 'size' in targets:
         # checks size of dataset 
