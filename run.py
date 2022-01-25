@@ -14,11 +14,11 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/")
+        data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
 
     if 'size' in targets:
         # checks size of dataset 
-        df = pd.read_csv(".")
+        df = pd.read_csv("./data/temp/RYUJIN_toxicVals1.csv")
         print(len(df))
 
     if 'eda' in targets:
@@ -27,7 +27,7 @@ def main(targets):
     if 'toxicity' in targets:
         # run on x to y tweets
         # 2nd parameter: name of cancelled individual
-        toxicityFunc(data[:20000], "name")
+        toxicityFunc(data, "GISELLE")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:

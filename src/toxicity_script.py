@@ -50,7 +50,7 @@ def toxicityFunc(data, target):
                 severe_val = response['attributeScores']['SEVERE_TOXICITY']['summaryScore']['value']
                 insult_val = response['attributeScores']['INSULT']['summaryScore']['value']
                 profanity_val = response['attributeScores']['PROFANITY']['summaryScore']['value']
-            except: # if language is not english or text is copypastas
+            except: # if language is not english as recognized by api
                 toxicity_val = 1000
                 severe_val = 1000
                 insult_val = 1000
@@ -58,7 +58,7 @@ def toxicityFunc(data, target):
 
             # assign toxicity value to text in dictionary
             tweet_dict[tweet_text] = [toxicity_val, severe_val, insult_val, profanity_val]
-            time.sleep(1)
+            time.sleep(0.001)
 
         # print statements
         # print("index: " + str(index))
@@ -71,5 +71,5 @@ def toxicityFunc(data, target):
         'insult': [insult_val], 'profanity': [profanity_val]})
         main_df = pd.concat([main_df, temp_df]) # adds on to existing dataframe of tweets
 
-        file_name = tempdir + target + '_toxicVals3.csv'
+        file_name = tempdir + target + '_toxicVals2.csv'
         main_df.to_csv(file_name, index=False)

@@ -1,16 +1,31 @@
-from imp import init_builtin
 import pandas as pd 
 import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-import re
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
-cancellation_date = datetime.datetime(2021, 8, 24)
-target_indiv = "name"
-outdir = ".//data/out/"
-tempdir = ".//data/temp"
+maleKpop_cancel_date = datetime.datetime(2021, 8, 24) # LUCAS
+femaleKpop_cancel_date = datetime.datetime(2021, 10, 23) # GISELLE
+
+maleHH_cancel_date = datetime.datetime(2021, 7, 25) # DABABY
+femaleHH_cancel_date = datetime.datetime(2021, 9, 13) # NICKI
+
+malePop_cancel_date = datetime.datetime(2021, 8, 28) # ZAYN
+femalePop_cancel_date = datetime.datetime(2020, 5, 25) # DOJA CAT
+
+# list of cancelled individuals 
+male_kpop_list = ['JAEMIN', 'LUCAS']
+female_kpop_list = ['GISELLE', 'RYUJIN']
+
+male_hiphop_list = ['DABABY', 'LIL_BABY']
+female_hiphop_list = ['NICKI', 'SAWEETIE']
+
+male_pop_list = ['ZAYN', 'HARRY']
+female_pop_list = ['DOJA', 'ADELE']
+
+base_outdir = ".//data/out/"
+tempdir = ".//data/temp/"
 
 def convert_dates(data):
     '''
@@ -33,39 +48,39 @@ def count_days(date, cancel_date):
     '''
     return date - cancel_date
 
-def user_activity_levels(data, cancel_date):
-    '''
-    measures posting activity levels by counting the number of tweets
-    that occur per each time window (1 day)
-    '''
-    groupedUsers = data[['created_at', 'text']].groupby(by='created_at')
+# def user_activity_levels(data, cancel_date):
+#     '''
+#     measures posting activity levels by counting the number of tweets
+#     that occur per each time window (1 day)
+#     '''
+#     groupedUsers = data[['created_at', 'text']].groupby(by='created_at')
 
-    num_tweets = groupedUsers.count()['text'] # number of tweets per time window
+#     num_tweets = groupedUsers.count()['text'] # number of tweets per time window
 
-    df = num_tweets.reset_index().rename(
-        columns={"created_at": "Date", "text": "# Tweets"})
+#     df = num_tweets.reset_index().rename(
+#         columns={"created_at": "Date", "text": "# Tweets"})
 
-    df['Date'] = df['Date'].apply(
-        lambda x: count_days(x, cancel_date)).dt.days
+#     df['Date'] = df['Date'].apply(
+#         lambda x: count_days(x, cancel_date)).dt.days
 
-    # convert df to csv
-    file_path = target_indiv + "_userActivityLevels.csv"
-    out_path = os.path.join(tempdir, file_path)
-    df.to_csv(out_path)
+#     # convert df to csv
+#     file_path = target_indiv + "_userActivityLevels.csv"
+#     out_path = os.path.join(tempdir, file_path)
+#     df.to_csv(out_path)
 
-    return df
+#     return df
 
-def create_userActivity_graph(df):
-    '''
-    creates graph for user activity
-    '''
-    sns.lineplot(data=df, x="Date", y="# Tweets")
-    plt.xlabel('# Days Before and After Cancellation')
-    plt.title("Volume of Tweets")
+# def create_userActivity_graph(df):
+#     '''
+#     creates graph for user activity
+#     '''
+#     sns.lineplot(data=df, x="Date", y="# Tweets")
+#     plt.xlabel('# Days Before and After Cancellation')
+#     plt.title("Volume of Tweets")
 
-    file_path = target_indiv + "_userActivityPlot.png"
-    out_path = os.path.join(outdir, file_path)
-    plt.savefig(out_path, bbox_inches='tight')
+#     file_path = target_indiv + "_userActivityPlot.png"
+#     out_path = os.path.join(outdir, file_path)
+#     plt.savefig(out_path, bbox_inches='tight')
 
 def numOfTweets(df, cancel_date):
     '''
@@ -84,7 +99,9 @@ def numOfTweets(df, cancel_date):
 
     return num_df
 
-def createToxicityLines(df, attribute_type):
+def createToxicityLines(df, attribute_type, indiv):
+    outdir = base_outdir + 'kpop_' + indiv.lower()
+
     if attribute_type == 'toxicity': 
         toxicityLevels = df.mean()['toxicity'] # mean toxicity per time window
         toxicity_df = toxicityLevels.reset_index().rename(
@@ -95,7 +112,7 @@ def createToxicityLines(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Toxicity Levels")
 
-        file_name = target_indiv + "_toxicityPlot.png"
+        file_name = indiv + "_toxicityPlot.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -109,7 +126,7 @@ def createToxicityLines(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Severe Toxicity Levels")
 
-        file_name = target_indiv + "_severeToxicityPlot.png"
+        file_name = indiv + "_severeToxicityPlot.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -123,7 +140,7 @@ def createToxicityLines(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Insult Levels")
 
-        file_name = target_indiv + "_insultPlot.png"
+        file_name = indiv + "_insultPlot.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -137,7 +154,7 @@ def createToxicityLines(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Mean Profanity Levels")
 
-        file_name = target_indiv + "_profanityPlot.png"
+        file_name = indiv + "_profanityPlot.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -150,7 +167,7 @@ def month_func(month_num):
     
     return month_li[month_num - 1]
 
-def createToxicityBoxPlots(df, attribute_type):
+def createToxicityBoxPlots(df, attribute_type, indiv):
     '''
     creates box plot graphs based on toxicity values 
     '''
@@ -158,13 +175,15 @@ def createToxicityBoxPlots(df, attribute_type):
     copy_df['Month'] = copy_df['created_at'].dt.month
     copy_df['Month'] = copy_df['Month'].apply(month_func)
 
+    outdir = base_outdir + 'kpop_' + indiv.lower()
+
     if attribute_type == 'toxicity': 
         copy_df = copy_df.rename(columns={"toxicity": "Toxicity Levels"})
         sns.boxplot(data=copy_df, x="Month", y="Toxicity Levels")
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Toxicity Levels")
 
-        file_name = target_indiv + "_BoxToxicity.png"
+        file_name = indiv + "_BoxToxicity.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -174,7 +193,7 @@ def createToxicityBoxPlots(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Severe Toxicity Levels")
 
-        file_name = target_indiv + "_BoxSevToxic.png"
+        file_name = indiv + "_BoxSevToxic.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -184,7 +203,7 @@ def createToxicityBoxPlots(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Insult Levels")
 
-        file_name = target_indiv + "_BoxInsult.png"
+        file_name = indiv + "_BoxInsult.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
@@ -194,11 +213,11 @@ def createToxicityBoxPlots(df, attribute_type):
         plt.xlabel('# Days Before and After Cancellation')
         plt.title("Profanity Levels")
 
-        file_name = target_indiv + "_BoxProfanity.png"
+        file_name = indiv + "_BoxProfanity.png"
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
-def calcToxicityOverTime(file_path, cancel_date):
+def calcToxicityOverTime(file_path, cancel_date, indiv):
     '''
     creates box plots and line graphs showing how toxicity levels change over time
 
@@ -214,13 +233,13 @@ def calcToxicityOverTime(file_path, cancel_date):
     inital_df = inital_df[inital_df['profanity'] != 1000]
 
     # creates and saves box plots 
-    createToxicityBoxPlots(inital_df, 'toxicity')
+    createToxicityBoxPlots(inital_df, 'toxicity', indiv)
     plt.clf()
-    createToxicityBoxPlots(inital_df, 'severe_toxicity')
+    createToxicityBoxPlots(inital_df, 'severe_toxicity', indiv)
     plt.clf()
-    createToxicityBoxPlots(inital_df, 'insult')
+    createToxicityBoxPlots(inital_df, 'insult', indiv)
     plt.clf()
-    createToxicityBoxPlots(inital_df, 'profanity')
+    createToxicityBoxPlots(inital_df, 'profanity', indiv)
 
     line_df = inital_df.copy()
     line_df['created_at'] = line_df['created_at'].apply(
@@ -230,13 +249,13 @@ def calcToxicityOverTime(file_path, cancel_date):
 
     # creates and saves line graphs 
     plt.clf()
-    createToxicityLines(groupedUsers, 'toxicity')
+    createToxicityLines(groupedUsers, 'toxicity', indiv)
     plt.clf()
-    createToxicityLines(groupedUsers, 'severe_toxicity')
+    createToxicityLines(groupedUsers, 'severe_toxicity', indiv)
     plt.clf()
-    createToxicityLines(groupedUsers, 'insult')
+    createToxicityLines(groupedUsers, 'insult', indiv)
     plt.clf()
-    createToxicityLines(groupedUsers, 'profanity')
+    createToxicityLines(groupedUsers, 'profanity', indiv)
 
 def cleanData(df):
     '''
@@ -267,7 +286,13 @@ def calculate_stats(data, test=False):
         # # create graphs + save as pngs
         # create_userActivity_graph(userActivity_df)
 
-        calcToxicityOverTime("./data/temp/", cancellation_date)
+        for x in male_kpop_list: 
+            file_name = tempdir + x + '_FINALtoxicVals.csv'
+            calcToxicityOverTime(file_name, maleKpop_cancel_date, x)
+
+        for x in female_kpop_list: 
+            file_name = tempdir + x + '_FINALtoxicVals.csv'
+            calcToxicityOverTime(file_name, femaleKpop_cancel_date, x)
     else:
         # userActivity_df = user_activity_levels(df, test_date)
         # totalTweets = numOfTweets(df, test_date)
