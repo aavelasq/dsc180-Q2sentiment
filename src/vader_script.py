@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
-from eda import convert_dates
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 tempdir = ".//data/temp/"
@@ -27,25 +26,19 @@ def plotPolarity(meanPolar, target):
     plt.savefig(out_path_png,dpi=300, bbox_inches = "tight")
     plt.close()
 
-
 def polarityFunc(data, target):
-    '''
-    calculates mean polarity before and after controversy date
-    outputs line plot and polarity over cancellation period data 
-    using Vader Sentiment library
-    '''
 
-    data = convert_dates(data)
-    data["Days Before & After Controversy"] = (data["created_at"] - cancellation_date).dt.days
-
+    main_df = data
     analyser = SentimentIntensityAnalyzer()
     scores = []
 
     for tweet in data['text']: 
         polarity_val = analyser.polarity_scores(tweet)
         scores.append(polarity_val)
-    print(len(scores))
 
+    file_name = tempdir + target + '_vaderPolarity.csv'
+    
+    print("Data Collected: ", len(scores))
     temp_df = pd.DataFrame(scores)
 
     data['Compound'] = temp_df['compound']
@@ -60,3 +53,5 @@ def polarityFunc(data, target):
     file_name = tempdir + target + '_vaderPolarity.csv'
     pol_mean_daily = pol_mean_daily.reset_index()
     pol_mean_daily.to_csv(file_name, index=False)
+    
+    main_df.to_csv(file_name, index=False)
