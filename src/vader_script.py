@@ -3,12 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
+from eda import convert_dates
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 tempdir = ".//data/temp/"
 outdir = ".//data/out/"
 # CHANGE DATE DEPENDING ON INDIVIDUAL
-cancellation_date = datetime.datetime(2021, 10, 28)
+cancellation_date = datetime.datetime(2021, 10, 23)
 
 def plotPolarity(meanPolar, target):
     '''
@@ -27,6 +28,9 @@ def plotPolarity(meanPolar, target):
     plt.close()
 
 def polarityFunc(data, target):
+
+    data = convert_dates(data)
+    data["Days Before & After Controversy"] = (data["created_at"] - cancellation_date).dt.days
 
     main_df = data
     analyser = SentimentIntensityAnalyzer()
