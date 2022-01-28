@@ -1,17 +1,11 @@
 import pandas as pd
-import pandas.util.testing as tm
-import matplotlib.pyplot as plt
-import seaborn as sns
-import sys
-import matplotlib.dates as mdates
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-tempdir = "/Users/nikithagopal/Documents/dsc30-pa1/dsc180-Q2sentiment/data/temp/"
+tempdir = ".//data/temp/"
 
 def polarityFunc(data, target):
 
     main_df = data
-    tweet_dict = {}
     analyser = SentimentIntensityAnalyzer()
     scores = []
     counter = 0

@@ -5,6 +5,7 @@ sys.path.insert(0, 'src') # add src to paths
 
 from eda import calculate_stats
 from toxicity_script import toxicityFunc
+from vader_script import polarityFunc
 
 def main(targets):
     # data_config = json.load(open('config/data-params.json'))
@@ -14,7 +15,7 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
+        data = pd.read_csv(".//data/raw/RYUJIN_rawtweets.csv")
 
     if 'size' in targets:
         # checks size of dataset 
@@ -28,6 +29,9 @@ def main(targets):
         # run on x to y tweets
         # 2nd parameter: name of cancelled individual
         toxicityFunc(data, "GISELLE")
+
+    if 'vader' in targets:
+        polarityFunc(data, "RYUJIN")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:
