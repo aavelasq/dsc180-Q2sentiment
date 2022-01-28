@@ -16,27 +16,27 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/RYUJIN_rawtweets.csv")
+        data = pd.read_csv(".//data/raw/")
 
     if 'size' in targets:
         # checks size of dataset 
-        df = pd.read_csv("./data/temp/RYUJIN_toxicVals1.csv")
+        df = pd.read_csv("./data/temp/")
         print(len(df))
 
     if 'eda' in targets:
         calculate_stats(data)
 
     if 'toxicity' in targets:
-        # run on x to y tweets
         # 2nd parameter: name of cancelled individual
-        toxicityFunc(data, "DaBaby")
+        toxicityFunc(data, "name")
 
     if 'polarity' in targets:
         # 2nd parameter: name of cancelled individual
-        textblob_sentiment(data, "DaBaby")
+        textblob_sentiment(data, "name")
 
     if 'vader' in targets:
-        polarityFunc(data, "RYUJIN")
+        # 2nd parameter: name of cancelled individual
+        polarityFunc(data, "name")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:

@@ -1,15 +1,12 @@
-import pandas as pd 
 import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-import re
 from textblob import TextBlob
 from eda import convert_dates
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL
 cancellation_date = datetime.datetime(2021, 7, 25)
-# target_indiv = "Saweetie"
 outdir = ".//data/out/"
 tempdir = ".//data/temp/"
 

@@ -20,7 +20,6 @@ def toxicityFunc(data, target):
             static_discovery=False,
         )
 
-    tweet_count = 0 
     main_df = pd.DataFrame()
     tweet_dict = {}
 
@@ -60,16 +59,11 @@ def toxicityFunc(data, target):
             tweet_dict[tweet_text] = [toxicity_val, severe_val, insult_val, profanity_val]
             time.sleep(0.001)
 
-        # print statements
-        # print("index: " + str(index))
-        # tweet_count += 1
-        # print(tweet_count)
-
         # add to main dataframe 
         temp_df = pd.DataFrame({'text': [tweet_text], 'created_at': [tweet_date], 'id': [tweet_id],
         'toxicity': [toxicity_val], 'severe_toxicity': [severe_val], 
         'insult': [insult_val], 'profanity': [profanity_val]})
         main_df = pd.concat([main_df, temp_df]) # adds on to existing dataframe of tweets
 
-        file_name = tempdir + target + '_toxicVals2.csv'
+        file_name = tempdir + target + '_toxicVals.csv'
         main_df.to_csv(file_name, index=False)
