@@ -34,18 +34,14 @@ def polarityFunc(data, target):
     main_df = data
     analyser = SentimentIntensityAnalyzer()
     scores = []
-    counter = 0
+
     for tweet in data['text']: 
         polarity_val = analyser.polarity_scores(tweet)
         scores.append(polarity_val)
 
-        if counter/1000 == 0:
-            print('completed:', str(counter))
-        counter += 1
-    
     file_name = tempdir + target + '_vaderPolarity.csv'
     
-    print(len(scores))
+    print("Data Collected: ", len(scores))
     temp_df = pd.DataFrame(scores)
 
     data['Compound'] = temp_df['compound']
