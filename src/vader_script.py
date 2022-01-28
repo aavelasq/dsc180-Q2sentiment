@@ -2,21 +2,18 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import datetime
 from eda import convert_dates
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 tempdir = ".//data/temp/"
 outdir = ".//data/out/"
-# CHANGE DATE DEPENDING ON INDIVIDUAL
-cancellation_date = datetime.datetime(2021, 10, 23)
 
 def plotPolarity(meanPolar, target):
     '''
     produces line plot tracking polarity of tweets relating to
     an individual before and after a controvery date
     '''
-
+    plt.figure(figsize = (10,5)) # plot size 
     sns.lineplot(data=meanPolar)
     plt.xlabel('# Days Before and After Cancellation')
     plt.ylabel("Polarity")
@@ -27,7 +24,7 @@ def plotPolarity(meanPolar, target):
     plt.savefig(out_path_png,dpi=300, bbox_inches = "tight")
     plt.close()
 
-def polarityFunc(data, target):
+def polarityFunc(data, target, cancellation_date):
 
     data = convert_dates(data)
     data["Days Before & After Controversy"] = (data["created_at"] - cancellation_date).dt.days

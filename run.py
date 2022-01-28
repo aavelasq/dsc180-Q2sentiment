@@ -1,4 +1,5 @@
 import sys
+import datetime
 import pandas as pd
 
 sys.path.insert(0, 'src') # add src to paths
@@ -8,6 +9,9 @@ from toxicity_script import toxicityFunc
 from vader_script import polarityFunc
 from polarity_script import textblob_sentiment
 
+# CHANGE DATE DEPENDING ON INDIVIDUAL
+cancellation_date = datetime.datetime(2021, 10, 23)
+
 def main(targets):
     # data_config = json.load(open('config/data-params.json'))
 
@@ -16,7 +20,7 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/RYUJIN_rawtweets.csv")
+        data = pd.read_csv(".//data/temp/RYUJIN_FINALtoxicVals.csv")
 
     if 'size' in targets:
         # checks size of dataset 
@@ -28,15 +32,15 @@ def main(targets):
 
     if 'toxicity' in targets:
         # 2nd parameter: name of cancelled individual
-        toxicityFunc(data, "RYUJIN")
+        toxicityFunc(data, "name")
 
     if 'polarity' in targets:
         # 2nd parameter: name of cancelled individual
-        textblob_sentiment(data, "RYUJIN")
+        textblob_sentiment(data, "name", cancellation_date)
 
     if 'vader' in targets:
         # 2nd parameter: name of cancelled individual
-        polarityFunc(data, "RYUJIN")
+        polarityFunc(data, "RYUJIN", cancellation_date)
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:

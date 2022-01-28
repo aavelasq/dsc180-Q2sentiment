@@ -1,12 +1,9 @@
-import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 from textblob import TextBlob
 from eda import convert_dates
 
-# CHANGE DATE DEPENDING ON INDIVIDUAL
-cancellation_date = datetime.datetime(2021, 7, 25)
 outdir = ".//data/out/"
 tempdir = ".//data/temp/"
 
@@ -17,7 +14,7 @@ def textblob_analyzer_polarity(text):
     tweet = TextBlob(text)
     return tweet.sentiment.polarity
     
-def textblob_sentiment(data, target):
+def textblob_sentiment(data, target, cancellation_date):
     '''
     calculates mean polarity before and after controversy date
     outputs line plot and polarity over cancellation period data
@@ -27,6 +24,7 @@ def textblob_sentiment(data, target):
     data['sentiment polarity'] = data["text"].apply(textblob_analyzer_polarity)
     pol_mean_daily = data.groupby("Days Before & After Controversy").mean()['sentiment polarity']
 
+    plt.figure(figsize = (10,5)) # plot size
     sns.lineplot(data=pol_mean_daily)
     plt.xlabel('# Days Before and After Cancellation')
     plt.ylabel("Polarity")
