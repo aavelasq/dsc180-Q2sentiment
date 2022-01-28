@@ -6,6 +6,7 @@ sys.path.insert(0, 'src') # add src to paths
 from eda import calculate_stats
 from toxicity_script import toxicityFunc
 from vader_script import polarityFunc
+from polarity_script import textblob_sentiment
 
 def main(targets):
     # data_config = json.load(open('config/data-params.json'))
@@ -28,7 +29,11 @@ def main(targets):
     if 'toxicity' in targets:
         # run on x to y tweets
         # 2nd parameter: name of cancelled individual
-        toxicityFunc(data, "GISELLE")
+        toxicityFunc(data, "DaBaby")
+
+    if 'polarity' in targets:
+        # 2nd parameter: name of cancelled individual
+        textblob_sentiment(data, "DaBaby")
 
     if 'vader' in targets:
         polarityFunc(data, "RYUJIN")
