@@ -5,6 +5,7 @@ sys.path.insert(0, 'src') # add src to paths
 
 from eda import calculate_stats
 from toxicity_script import toxicityFunc
+from polarity_script import textblob_sentiment
 
 def main(targets):
     # data_config = json.load(open('config/data-params.json'))
@@ -14,8 +15,8 @@ def main(targets):
         #     data_cfg = json.load(fh)
 
         # data = etl.import_data(**data_cfg)
-        data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
-
+        # data = pd.read_csv(".//data/raw/kpop_giselle/GISELLE_rawtweets.csv")
+        data = pd.read_csv(".//data/raw/DaBaby_tweets.csv")
     if 'size' in targets:
         # checks size of dataset 
         df = pd.read_csv("./data/temp/RYUJIN_toxicVals1.csv")
@@ -27,7 +28,11 @@ def main(targets):
     if 'toxicity' in targets:
         # run on x to y tweets
         # 2nd parameter: name of cancelled individual
-        toxicityFunc(data, "GISELLE")
+        toxicityFunc(data, "DaBaby")
+
+    if 'polarity' in targets:
+        # 2nd parameter: name of cancelled individual
+        textblob_sentiment(data, "DaBaby")
 
     if 'test' in targets:
         # with open('config/data-params.json') as fh:
