@@ -48,39 +48,39 @@ def count_days(date, cancel_date):
     '''
     return date - cancel_date
 
-# def user_activity_levels(data, cancel_date):
-#     '''
-#     measures posting activity levels by counting the number of tweets
-#     that occur per each time window (1 day)
-#     '''
-#     groupedUsers = data[['created_at', 'text']].groupby(by='created_at')
+def user_activity_levels(data, target, cancel_date):
+    '''
+    measures posting activity levels by counting the number of tweets
+    that occur per each time window (1 day)
+    '''
+    groupedUsers = data[['created_at', 'text']].groupby(by='created_at')
 
-#     num_tweets = groupedUsers.count()['text'] # number of tweets per time window
+    num_tweets = groupedUsers.count()['text'] # number of tweets per time window
 
-#     df = num_tweets.reset_index().rename(
-#         columns={"created_at": "Date", "text": "# Tweets"})
+    df = num_tweets.reset_index().rename(
+        columns={"created_at": "Date", "text": "# Tweets"})
 
-#     df['Date'] = df['Date'].apply(
-#         lambda x: count_days(x, cancel_date)).dt.days
+    df['Date'] = df['Date'].apply(
+        lambda x: count_days(x, cancel_date)).dt.days
 
-#     # convert df to csv
-#     file_path = target_indiv + "_userActivityLevels.csv"
-#     out_path = os.path.join(tempdir, file_path)
-#     df.to_csv(out_path)
+    # convert df to csv
+    file_path = target + "_userActivityLevels.csv"
+    out_path = os.path.join(tempdir, file_path)
+    df.to_csv(out_path)
 
-#     return df
+    return df
 
-# def create_userActivity_graph(df):
-#     '''
-#     creates graph for user activity
-#     '''
-#     sns.lineplot(data=df, x="Date", y="# Tweets")
-#     plt.xlabel('# Days Before and After Cancellation')
-#     plt.title("Volume of Tweets")
+def create_userActivity_graph(df, target, out_folder):
+    '''
+    creates graph for user activity
+    '''
+    sns.lineplot(data=df, x="Date", y="# Tweets")
+    plt.xlabel('# Days Before and After Cancellation')
+    plt.title("Volume of Tweets")
 
-#     file_path = target_indiv + "_userActivityPlot.png"
-#     out_path = os.path.join(outdir, file_path)
-#     plt.savefig(out_path, bbox_inches='tight')
+    file_path = target + "_userActivityPlot.png"
+    out_path = os.path.join(base_outdir, out_folder + file_path)
+    plt.savefig(out_path, bbox_inches='tight')
 
 def numOfTweets(df, cancel_date):
     '''
@@ -217,20 +217,16 @@ def createToxicityBoxPlots(df, attribute_type, indiv):
         out_path = os.path.join(outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
-def calcToxicityOverTime(file_path, cancel_date, indiv):
+def calcToxicityOverTime(df, cancel_date, indiv):
     '''
     creates box plots and line graphs showing how toxicity levels change over time
 
     '''
-    data = pd.read_csv(file_path).rename(
-        columns={"date": "created_at"})
-    inital_df = convert_dates(data)
-
     # CLEAN DATAFRAME
-    inital_df = inital_df[inital_df['toxicity'] != 1000] 
-    inital_df = inital_df[inital_df['severe_toxicity'] != 1000]
-    inital_df = inital_df[inital_df['insult'] != 1000]
-    inital_df = inital_df[inital_df['profanity'] != 1000]
+    inital_df = df[df['toxicity'] != 1000] 
+    inital_df = df[df['severe_toxicity'] != 1000]
+    inital_df = df[df['insult'] != 1000]
+    inital_df = df[df['profanity'] != 1000]
 
     # creates and saves box plots 
     createToxicityBoxPlots(inital_df, 'toxicity', indiv)
@@ -271,28 +267,37 @@ def cleanData(df):
     new_df.to_csv(file_path, index=False)
     print(new_df)
 
-def calculate_stats(data, test=False):
-    # df = convert_dates(data)
-
+def calculate_stats(data_dict, test=False):
     if test == False:
-        # create csvs out of data
-        # userActivity_df = user_activity_levels(df, cancellation_date)
-        # # counts number of tweets before and after deplatforming 
-        # totalTweets = numOfTweets(df, cancellation_date)
+        artist_names = list(data_dict.keys())
 
-        # out_path = os.path.join(outdir, "GISELLE_numOfTweetsBefAft.csv")
-        # totalTweets.to_csv(out_path)
+        for indiv in artist_names:
+            toxicity_data = data_dict[indiv][0]
+            polarity_data = data_dict[indiv][1]
+            vader_data = data_dict[indiv][2]
+            cancel_date = data_dict[indiv][3]
 
-        # # create graphs + save as pngs
-        # create_userActivity_graph(userActivity_df)
+            toxicity_df = convert_dates(toxicity_data)
+            # create csvs out of data
+            userActivity_df = user_activity_levels(toxicity_df, indiv, cancel_date)
+            # counts number of tweets before and after cancellation 
+            totalTweets = numOfTweets(toxicity_df, cancel_date)
+            out_folder = 'kpop_' + indiv.lower() + '/'
+            out_file_name = out_folder + indiv + "_numOfTweetsBefAft.csv"
+            out_path = os.path.join(base_outdir, out_file_name)
+            totalTweets.to_csv(out_path)
+            # create graphs + save as pngs
+            plt.clf()
+            create_userActivity_graph(userActivity_df, indiv, out_folder)
+            plt.clf()
 
-        for x in male_kpop_list: 
-            file_name = tempdir + x + '_FINALtoxicVals.csv'
-            calcToxicityOverTime(file_name, maleKpop_cancel_date, x)
+            # generates visualizations from data generated by toxicity script
+            calcToxicityOverTime(toxicity_df, maleKpop_cancel_date, indiv)
 
-        for x in female_kpop_list: 
-            file_name = tempdir + x + '_FINALtoxicVals.csv'
-            calcToxicityOverTime(file_name, femaleKpop_cancel_date, x)
+            # generates visualizations from data generated by polarity script
+
+            # generates visualizations from data generated by vader script
+
     else:
         # userActivity_df = user_activity_levels(df, test_date)
         # totalTweets = numOfTweets(df, test_date)

@@ -1,9 +1,11 @@
 import sys
 import datetime
 import pandas as pd
+import json
 
 sys.path.insert(0, 'src') # add src to paths
 
+import etl
 from eda import calculate_stats
 from toxicity_script import toxicityFunc
 from vader_script import polarityFunc
@@ -16,10 +18,15 @@ def main(targets):
     # data_config = json.load(open('config/data-params.json'))
 
     if 'data' in targets:
-        # with open('config/data-params.json') as fh:
-        #     data_cfg = json.load(fh)
+        with open('config/data-params.json') as fh:
+            data_cfg = json.load(fh)
 
-        # data = etl.import_data(**data_cfg)
+        # list of dicts for each genre divided by gender containing datasets 
+        # aka two datasets per genre for male + female individuals
+        # generated from toxicity, polarity, and vader scripts
+        data_list = etl.import_data(**data_cfg)
+
+        # for running API scripts
         data = pd.read_csv(".//data/temp/RYUJIN_FINALtoxicVals.csv")
 
     if 'size' in targets:
@@ -28,7 +35,8 @@ def main(targets):
         print(len(df))
 
     if 'eda' in targets:
-        calculate_stats(data)
+        for data_dict in data_list:
+            calculate_stats(data_dict)
 
     if 'toxicity' in targets:
         '''
