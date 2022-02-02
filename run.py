@@ -23,11 +23,11 @@ def main(targets):
 
         # list of dicts for each genre divided by gender containing datasets 
         # aka two datasets per genre for male + female individuals
-        # generated from toxicity, polarity, and vader scripts
+        # data generated from toxicity, polarity, and vader scripts
         data_list = etl.import_data(**data_cfg)
 
         # for running API scripts
-        data = pd.read_csv(".//data/temp/RYUJIN_FINALtoxicVals.csv")
+        data = pd.read_csv(".//data/temp/")
 
     if 'size' in targets:
         # checks size of dataset 
@@ -35,6 +35,7 @@ def main(targets):
         print(len(df))
 
     if 'eda' in targets:
+        # data_list consists of dataframes for each gender per genre
         for data_dict in data_list:
             calculate_stats(data_dict)
 
