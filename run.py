@@ -27,7 +27,7 @@ def main(targets):
         data_list = etl.import_data(**data_cfg)
 
         # for running API scripts
-        data = pd.read_csv(".//data/temp/")
+        data = pd.read_csv(".//data/temp/JAEMIN_FINALtoxicVals.csv")
 
     if 'size' in targets:
         # checks size of dataset 
