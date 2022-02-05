@@ -9,10 +9,10 @@ import etl
 from eda import calculate_stats
 from toxicity_script import toxicityFunc
 from vader_script import polarityFunc
-from polarity_script import textblob_sentiment
+from polarity_script import calc_textblob_polarity
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL
-cancellation_date = datetime.datetime(2021, 10, 23)
+cancellation_date = datetime.datetime(2021, 9, 15)
 
 def main(targets):
     # data_config = json.load(open('config/data-params.json'))
@@ -27,7 +27,7 @@ def main(targets):
         data_list = etl.import_data(**data_cfg)
 
         # for running API scripts
-        data = pd.read_csv(".//data/temp/JAEMIN_FINALtoxicVals.csv")
+        data = pd.read_csv(".//data/raw/Saweetie_tweets.csv")
 
     if 'size' in targets:
         # checks size of dataset 
@@ -38,6 +38,7 @@ def main(targets):
         # data_list consists of dataframes for each gender per genre
         for data_dict in data_list:
             calculate_stats(data_dict)
+        # calculate_stats(data)
 
     if 'toxicity' in targets:
         '''
@@ -51,7 +52,7 @@ def main(targets):
         calculates polarity sentiment using TextBlob library
         '''
         # 2nd parameter: name of cancelled individual
-        textblob_sentiment(data, "name", cancellation_date)
+        calc_textblob_polarity(data, "name", cancellation_date)
 
     if 'vader' in targets:
         '''
@@ -73,3 +74,4 @@ def main(targets):
 if __name__ == '__main__':
     targets = sys.argv[1:]
     main(targets)
+

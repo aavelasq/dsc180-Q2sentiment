@@ -49,7 +49,8 @@ def import_data(test_dir, file_dir):
     '''
     male_kpop_dict = {}
     female_kpop_dict = {}
-    # male_hiphop_dict = {}
+    male_hiphop_dict = {}
+    female_hiphop_dict = {}
     # male_pop_dict = {}
 
     # kpop dicts 
@@ -58,7 +59,11 @@ def import_data(test_dir, file_dir):
     female_kpop_dict = data_helper_func(file_dir, female_kpop_list, 
         female_kpop_dict, femaleKpop_cancel_date)
 
-    # hiphop dicts 
+    # hiphop dicts
+    male_hiphop_dict = data_helper_func(file_dir, male_hiphop_list, 
+        male_hiphop_dict, maleHH_cancel_date)
+    female_hiphop_dict = data_helper_func(file_dir, female_hiphop_list, 
+        female_hiphop_dict, femaleHH_cancel_date) 
     
     # pop dicts
 
