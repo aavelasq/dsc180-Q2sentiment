@@ -1,6 +1,7 @@
 # The Effect of Cancel Culture on Sentiment Over Time
 
-This project analyzes the change in public sentiment towards musicians
+This project analyzes the change in public sentiment towards musicians,
+from the genres of K-Pop, Hip-Hop, and Pop,
 who were cancelled or called out on Twitter due to socially unacceptable behavior.
 At this current state of the project, our code will generate visualizations that
 show how sentiment changes over time for cancelled individuals 6 months before
