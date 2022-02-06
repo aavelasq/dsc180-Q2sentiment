@@ -62,7 +62,12 @@ def create_userActivity_graph(df, target, out_folder):
     plt.title("Volume of Tweets")
 
     file_path = target + "_userActivityPlot.png"
-    out_path = os.path.join(base_outdir, out_folder + file_path)
+
+    if out_folder == "":
+        out_path = os.path.join(base_outdir, file_path)
+    else:
+        out_path = os.path.join(base_outdir, out_folder + file_path)
+
     plt.savefig(out_path, bbox_inches='tight')
 
 def numOfTweets(df, cancel_date):
@@ -83,8 +88,9 @@ def numOfTweets(df, cancel_date):
     return num_df
 
 def createToxicityLines(df, attribute_type, indiv):
-    outdir = base_outdir + 'kpop_' + indiv.lower()
-
+    '''
+    creates line graphs from data generated from toxicity script
+    '''
     if attribute_type == 'toxicity': 
         toxicityLevels = df.mean()['toxicity'] # mean toxicity per time window
         toxicity_df = toxicityLevels.reset_index().rename(
@@ -96,7 +102,7 @@ def createToxicityLines(df, attribute_type, indiv):
         plt.title("Mean Toxicity Levels")
 
         file_name = indiv + "_toxicityPlot.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
     if attribute_type == 'severe_toxicity': 
@@ -110,7 +116,7 @@ def createToxicityLines(df, attribute_type, indiv):
         plt.title("Mean Severe Toxicity Levels")
 
         file_name = indiv + "_severeToxicityPlot.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
     if attribute_type == 'insult': 
@@ -124,7 +130,7 @@ def createToxicityLines(df, attribute_type, indiv):
         plt.title("Mean Insult Levels")
 
         file_name = indiv + "_insultPlot.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
     if attribute_type == 'profanity': 
@@ -138,7 +144,7 @@ def createToxicityLines(df, attribute_type, indiv):
         plt.title("Mean Profanity Levels")
 
         file_name = indiv + "_profanityPlot.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
 def month_func(month_num):
@@ -158,8 +164,6 @@ def createToxicityBoxPlots(df, attribute_type, indiv):
     copy_df['Month'] = copy_df['created_at'].dt.month
     copy_df['Month'] = copy_df['Month'].apply(month_func)
 
-    outdir = base_outdir + 'kpop_' + indiv.lower()
-
     if attribute_type == 'toxicity': 
         copy_df = copy_df.rename(columns={"toxicity": "Toxicity Levels"})
         sns.boxplot(data=copy_df, x="Month", y="Toxicity Levels")
@@ -167,7 +171,7 @@ def createToxicityBoxPlots(df, attribute_type, indiv):
         plt.title("Toxicity Levels")
 
         file_name = indiv + "_BoxToxicity.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
     if attribute_type == 'severe_toxicity': 
@@ -177,7 +181,7 @@ def createToxicityBoxPlots(df, attribute_type, indiv):
         plt.title("Severe Toxicity Levels")
 
         file_name = indiv + "_BoxSevToxic.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
     if attribute_type == 'insult': 
@@ -187,7 +191,7 @@ def createToxicityBoxPlots(df, attribute_type, indiv):
         plt.title("Insult Levels")
 
         file_name = indiv + "_BoxInsult.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
     if attribute_type == 'profanity': 
@@ -197,7 +201,7 @@ def createToxicityBoxPlots(df, attribute_type, indiv):
         plt.title("Profanity Levels")
 
         file_name = indiv + "_BoxProfanity.png"
-        out_path = os.path.join(outdir, file_name)
+        out_path = os.path.join(base_outdir, file_name)
         plt.savefig(out_path, bbox_inches='tight')
 
 def calcToxicityOverTime(df, cancel_date, indiv):
@@ -212,13 +216,13 @@ def calcToxicityOverTime(df, cancel_date, indiv):
     inital_df = df[df['profanity'] != 1000]
 
     # creates and saves box plots 
-    createToxicityBoxPlots(inital_df, 'toxicity', indiv)
-    plt.clf()
-    createToxicityBoxPlots(inital_df, 'severe_toxicity', indiv)
-    plt.clf()
-    createToxicityBoxPlots(inital_df, 'insult', indiv)
-    plt.clf()
-    createToxicityBoxPlots(inital_df, 'profanity', indiv)
+    # createToxicityBoxPlots(inital_df, 'toxicity', indiv)
+    # plt.clf()
+    # createToxicityBoxPlots(inital_df, 'severe_toxicity', indiv)
+    # plt.clf()
+    # createToxicityBoxPlots(inital_df, 'insult', indiv)
+    # plt.clf()
+    # createToxicityBoxPlots(inital_df, 'profanity', indiv)
 
     line_df = inital_df.copy()
     line_df['created_at'] = line_df['created_at'].apply(
@@ -268,7 +272,6 @@ def plotPolarity(meanPolar, target, outdir):
     plt.savefig(out_path_png,dpi=300, bbox_inches = "tight")
     # plt.close()
 
-
 def cleanData(df):
     '''
     remove tweets that start w/ RT (as it usually indicates that the tweet
@@ -289,8 +292,8 @@ def calculate_stats(data_dict, test=False):
 
         for indiv in artist_names:
             toxicity_data = data_dict[indiv][0]
-            polarity_data = data_dict[indiv][1]
-            vader_data = data_dict[indiv][2]
+            # polarity_data = data_dict[indiv][1]
+            # vader_data = data_dict[indiv][2]
             cancel_date = data_dict[indiv][3]
 
             toxicity_df = convert_dates(toxicity_data)
@@ -324,9 +327,37 @@ def calculate_stats(data_dict, test=False):
             plt.clf()
             plotPolarity(vader_output, indiv, base_outdir)
             plt.clf()
-            
 
     else:
-        # userActivity_df = user_activity_levels(df, test_date)
-        # totalTweets = numOfTweets(df, test_date)
-        print("test")
+        indiv = "test"
+        toxicity_data = data_dict[indiv][0]
+        cancel_date = data_dict[indiv][1]
+
+        toxicity_df = convert_dates(toxicity_data)
+            
+        # create csvs out of data
+        userActivity_df = user_activity_levels(toxicity_df, indiv, cancel_date)
+        # counts number of tweets before and after cancellation 
+        totalTweets = numOfTweets(toxicity_df, cancel_date)
+        out_file_name = indiv + "_numOfTweetsBefAft.csv"
+        out_path = os.path.join(base_outdir, out_file_name)
+        totalTweets.to_csv(out_path)
+        # create graphs + save as pngs
+        plt.clf()
+        create_userActivity_graph(userActivity_df, indiv, "")
+        plt.clf()
+
+        # generates visualizations from data generated by toxicity script
+        calcToxicityOverTime(toxicity_df, cancel_date, indiv)
+
+        # generates visualizations from data generated by textblob polarity script
+        polarity_output = calc_textblob_polarity(toxicity_df, indiv, cancel_date)
+        plt.clf()
+        create_textblob_plot(polarity_output, indiv, base_outdir)
+        plt.clf()
+            
+        # generates visualizations from data generated by vader script
+        vader_output = polarityFunc(toxicity_df, indiv, cancel_date)
+        plt.clf()
+        plotPolarity(vader_output, indiv, base_outdir)
+        plt.clf()
