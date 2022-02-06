@@ -7,9 +7,9 @@ sys.path.insert(0, 'src') # add src to paths
 
 import etl
 from eda import calculate_stats
-from toxicity_script import toxicityFunc
-from vader_script import polarityFunc
-from polarity_script import calc_textblob_polarity
+# from toxicity_script import toxicityFunc
+# from vader_script import polarityFunc
+# from polarity_script import calc_textblob_polarity
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL
 cancellation_date = datetime.datetime(2021, 9, 15)
