@@ -21,12 +21,16 @@ female_hiphop_list = ['NICKI', 'SAWEETIE']
 male_pop_list = ['ZAYN', 'HARRY']
 female_pop_list = ['DOJA', 'ADELE']
 
-def import_test_data(test_dir, file_dir):
+def import_test_data(toxicity, polarity,vader):
     '''
     used for test target
     '''
-    df = pd.read_csv(test_dir)
-    return df
+    cancel_date = datetime.datetime(2022, 2, 6)
+    toxicity_df = pd.read_csv(toxicity)
+    polarity_df = pd.read_csv(polarity)
+    vader_df = pd.read_csv(vader)
+
+    return [toxicity_df, polarity_df, vader_df, cancel_date]
 
 def data_helper_func(file_dir, input_list, output_dict, cancel_date):
     for indiv in input_list:

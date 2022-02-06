@@ -22,7 +22,6 @@ def calc_textblob_polarity(data, target, cancellation_date):
     data['sentiment polarity'] = data["text"].apply(textblob_analyzer_polarity)
     pol_mean_daily = data.groupby("Days Before & After Controversy").mean()['sentiment polarity']
 
-
     polarity_output = pol_mean_daily.reset_index()
     csv_file_name = outdir + target + '_meanPolarity.csv'
     polarity_output.to_csv(csv_file_name, index=False)

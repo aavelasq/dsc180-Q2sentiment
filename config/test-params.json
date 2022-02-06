@@ -1,0 +1,5 @@
+{
+    "toxicity": "./data/test_data.csv",
+    "polarity": "./data/test_meanPolarity.csv",
+    "vader": "./data/test_vaderPolarity.csv"
+}

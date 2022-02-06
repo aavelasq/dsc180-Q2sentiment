@@ -62,12 +62,12 @@ def main(targets):
         polarityFunc(data, "name", cancellation_date)
 
     if 'test' in targets:
-        with open('config/data-params.json') as fh:
+        with open('config/test-params.json') as fh:
             data_cfg = json.load(fh)
 
-        data = etl.import_test_data(**data_cfg)
+        data_list = etl.import_test_data(**data_cfg)
 
-        test_data_dict = {"test": [data, datetime.datetime(2022, 2, 6)]}
+        test_data_dict = {"test": data_list}
 
         # rq 1 function 
         calculate_stats(test_data_dict, test=True)
