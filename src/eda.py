@@ -1,11 +1,7 @@
 import pandas as pd 
-import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-from polarity_script import calc_textblob_polarity
-from polarity_script import convert_dates
-from vader_script import polarityFunc
 
 base_outdir = ".//data/out/"
 tempdir = ".//data/temp/"
