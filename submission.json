@@ -1,4 +1,4 @@
 {
-    "dockerhub-id": "aavelasq/twitter-project",
-    "build-script": "python run.py test"
+    "GitHub Repository": "https://github.com/aavelasq/dsc180-Q2sentiment",
+    "DockerHub Repository": "https://hub.docker.com/repository/docker/aavelasq/twitter-project"
 }
