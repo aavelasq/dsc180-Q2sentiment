@@ -40,26 +40,26 @@ def main(targets):
             calculate_stats(data_dict)
         # calculate_stats(data)
 
-    if 'toxicity' in targets:
-        '''
-        calculates toxicity sentiment using Google Perspective API
-        '''
-        # 2nd parameter: name of cancelled individual
-        toxicityFunc(data, "name")
+    # if 'toxicity' in targets:
+    #     '''
+    #     calculates toxicity sentiment using Google Perspective API
+    #     '''
+    #     # 2nd parameter: name of cancelled individual
+    #     toxicityFunc(data, "name")
 
-    if 'polarity' in targets:
-        '''
-        calculates polarity sentiment using TextBlob library
-        '''
-        # 2nd parameter: name of cancelled individual
-        calc_textblob_polarity(data, "name", cancellation_date)
+    # if 'polarity' in targets:
+    #     '''
+    #     calculates polarity sentiment using TextBlob library
+    #     '''
+    #     # 2nd parameter: name of cancelled individual
+    #     calc_textblob_polarity(data, "name", cancellation_date)
 
-    if 'vader' in targets:
-        '''
-        calculates compound polarity using Vader library 
-        '''
-        # 2nd parameter: name of cancelled individual
-        polarityFunc(data, "name", cancellation_date)
+    # if 'vader' in targets:
+    #     '''
+    #     calculates compound polarity using Vader library 
+    #     '''
+    #     # 2nd parameter: name of cancelled individual
+    #     polarityFunc(data, "name", cancellation_date)
 
     if 'test' in targets:
         with open('config/test-params.json') as fh:
