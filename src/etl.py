@@ -16,7 +16,7 @@ male_kpop_list = ['JAEMIN', 'LUCAS']
 female_kpop_list = ['GISELLE', 'RYUJIN']
 
 male_hiphop_list = ['DABABY', 'LIL_BABY']
-female_hiphop_list = ['NICKI', 'SAWEETIE']
+female_hiphop_list = ['NICKI_MINAJ', 'SAWEETIE']
 
 male_pop_list = ['ZAYN', 'HARRY']
 female_pop_list = ['DOJA', 'ADELE']
@@ -34,7 +34,7 @@ def import_test_data(toxicity, polarity,vader):
 
 def data_helper_func(file_dir, input_list, output_dict, cancel_date):
     for indiv in input_list:
-        toxic_file = file_dir + indiv + '_FINALtoxicVals.csv'
+        toxic_file = file_dir + indiv + '_toxicVals.csv'
         toxic_df = pd.read_csv(toxic_file)
 
         polarity_file = file_dir + indiv + '_meanPolarity.csv'
@@ -47,28 +47,35 @@ def data_helper_func(file_dir, input_list, output_dict, cancel_date):
 
     return output_dict
 
-def import_data(test_dir, file_dir):
+def import_data(test_dir, genre1_dir, genre2_dir, genre3_dir):
     '''
     main func used for data target
     '''
+    # initalize variables
     male_kpop_dict = {}
     female_kpop_dict = {}
     male_hiphop_dict = {}
     female_hiphop_dict = {}
-    # male_pop_dict = {}
+    male_pop_dict = {}
+    female_pop_dict = {}
 
     # kpop dicts 
-    male_kpop_dict = data_helper_func(file_dir, male_kpop_list, 
+    male_kpop_dict = data_helper_func(genre1_dir, male_kpop_list, 
         male_kpop_dict, maleKpop_cancel_date)
-    female_kpop_dict = data_helper_func(file_dir, female_kpop_list, 
+    female_kpop_dict = data_helper_func(genre1_dir, female_kpop_list, 
         female_kpop_dict, femaleKpop_cancel_date)
 
     # hiphop dicts
-    male_hiphop_dict = data_helper_func(file_dir, male_hiphop_list, 
+    male_hiphop_dict = data_helper_func(genre2_dir, male_hiphop_list, 
         male_hiphop_dict, maleHH_cancel_date)
-    female_hiphop_dict = data_helper_func(file_dir, female_hiphop_list, 
+    female_hiphop_dict = data_helper_func(genre2_dir, female_hiphop_list, 
         female_hiphop_dict, femaleHH_cancel_date) 
     
     # pop dicts
+    # male_pop_dict = data_helper_func(genre3_dir, male_pop_list, 
+    #     male_pop_dict, malePop_cancel_date)
+    # female_pop_dict = data_helper_func(genre3_dir, female_pop_list, 
+    #     female_pop_dict, femalePop_cancel_date) 
 
-    return [male_kpop_dict, female_kpop_dict]
+    return [male_kpop_dict, female_kpop_dict, 
+            male_hiphop_dict, female_hiphop_dict]

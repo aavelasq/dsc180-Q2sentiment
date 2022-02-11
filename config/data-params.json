@@ -1,4 +1,6 @@
 {
     "test_dir": "./data/test_data.csv",
-    "file_dir": "./data/temp/"
+    "genre1_dir": "./data/temp/kpop_data/",
+    "genre2_dir": "./data/temp/hiphop_data/",
+    "genre3_dir": "./data/temp/pop_data/"
 }

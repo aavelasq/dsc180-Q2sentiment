@@ -7,6 +7,7 @@ sys.path.insert(0, 'src') # add src to paths
 
 import etl
 from eda import calculate_stats
+from preprocessing import calculate_avgs
 # from toxicity_script import toxicityFunc
 # from vader_script import polarityFunc
 # from polarity_script import calc_textblob_polarity
@@ -27,7 +28,7 @@ def main(targets):
         data_list = etl.import_data(**data_cfg)
 
         # for running API scripts
-        data = pd.read_csv(".//data/raw/Saweetie_tweets.csv")
+        # data = pd.read_csv(".//data/raw/Saweetie_tweets.csv")
 
     if 'size' in targets:
         # checks size of dataset 
@@ -40,6 +41,14 @@ def main(targets):
             calculate_stats(data_dict)
         # calculate_stats(data)
 
+    if 'preprocessing' in targets:
+        with open('config/preprocessing-params.json') as fh:
+            data_cfg = json.load(fh)
+
+        for data_dict in data_list:
+            calculate_avgs(data_dict, **data_cfg)
+
+    # UNCOMMENT IF RUNNING DATA ON API SCRIPTS
     # if 'toxicity' in targets:
     #     '''
     #     calculates toxicity sentiment using Google Perspective API
