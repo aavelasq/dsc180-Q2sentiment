@@ -34,7 +34,7 @@ def preprocess_ps_df(strong_df, weak_df, roll_days):
     return pd.concat([strong_df, weak_df])
 
 def ps_line_plot(out_dir, df, metric):
-    plt.figure(figsize = (20,10))
+    plt.figure(figsize = (15,10))
     sns.lineplot(data=df, x="days_cancel", y=metric, hue="group")
     plt.xlabel('# Days Before and After Cancellation')
     plt.ylabel(str(metric))
@@ -47,8 +47,17 @@ def create_visuals(arg1, arg2):
     strong_ps_df = pd.read_csv(arg1)
     weak_ps_df = pd.read_csv(arg2)
 
-    toxic_ps_df = preprocess_ps_df(strong_ps_df, weak_ps_df, "14d")
-    vader_ps_df = preprocess_ps_df(strong_ps_df, weak_ps_df, "28d")
+    # preprocess data
+    toxic_ps_df = preprocess_ps_df(strong_ps_df, weak_ps_df, "14d")[[
+        "days_cancel", "severe_toxicity", "insult", "group"]]
+    vader_ps_df = preprocess_ps_df(strong_ps_df, weak_ps_df, "28d")[[
+        "days_cancel", "Compound", "Negative", "group"]]
+    # convert timedelta to int 
+    toxic_ps_df["days_cancel"] = toxic_ps_df["days_cancel"].dt.days
+    vader_ps_df["days_cancel"] = vader_ps_df["days_cancel"].dt.days
+    # makes sure time period is 6 months before and after cancellation date
+    toxic_ps_df = toxic_ps_df[(toxic_ps_df["days_cancel"] >= -183) | (toxic_ps_df["days_cancel"] <= 183)]
+    vader_ps_df = vader_ps_df[(vader_ps_df["days_cancel"] >= -183) | (vader_ps_df["days_cancel"] <= 183)]
 
     plt.clf()
     ps_line_plot("./data/out/", toxic_ps_df, "severe_toxicity")
