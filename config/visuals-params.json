@@ -1,0 +1,4 @@
+{
+    "arg1": "./data/temp/strong_ps.csv",
+    "arg2": "./data/temp/weak_ps.csv"
+}

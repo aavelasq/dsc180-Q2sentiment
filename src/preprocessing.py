@@ -67,8 +67,8 @@ def calculate_avgs(data_dict, out_dir, temp_dir):
 
     for indiv in artist_names:
         toxicity_data = data_dict[indiv][0]
-        vader_data = data_dict[indiv][2]
-        # cancel_date = data_dict[indiv][3]
+        vader_data = data_dict[indiv][1]
+        # cancel_date = data_dict[indiv][2]
 
         toxicity_df = convert_dates(toxicity_data)
         vader_df = convert_dates(vader_data)

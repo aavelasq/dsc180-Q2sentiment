@@ -15,8 +15,8 @@ femalePop_cancel_date = datetime.datetime(2020, 5, 25) # DOJA CAT
 male_kpop_list = ['JAEMIN', 'LUCAS']
 female_kpop_list = ['GISELLE', 'RYUJIN']
 
-male_hiphop_list = ['DABABY', 'LIL_BABY']
-female_hiphop_list = ['NICKI_MINAJ', 'SAWEETIE']
+male_hiphop_list = ['DABABY', 'LILBABY']
+female_hiphop_list = ['NICKI', 'SAWEETIE']
 
 male_pop_list = ['ZAYN', 'HARRY']
 female_pop_list = ['DOJA', 'ADELE']
@@ -27,27 +27,71 @@ def import_test_data(toxicity, polarity,vader):
     '''
     cancel_date = datetime.datetime(2022, 2, 6)
     toxicity_df = pd.read_csv(toxicity)
-    polarity_df = pd.read_csv(polarity)
+    # polarity_df = pd.read_csv(polarity)
     vader_df = pd.read_csv(vader)
 
-    return [toxicity_df, polarity_df, vader_df, cancel_date]
+    return [toxicity_df, vader_df, cancel_date]
 
 def data_helper_func(file_dir, input_list, output_dict, cancel_date):
+    '''
+    helper function for import_main_data
+    imports toxicity, vader, polarity csv files 
+    '''
     for indiv in input_list:
         toxic_file = file_dir + indiv + '_toxicVals.csv'
         toxic_df = pd.read_csv(toxic_file)
 
-        polarity_file = file_dir + indiv + '_meanPolarity.csv'
-        polarity_df = pd.read_csv(polarity_file)
+        # polarity_file = file_dir + indiv + '_meanPolarity.csv'
+        # polarity_df = pd.read_csv(polarity_file)
 
         vader_file = file_dir + indiv + '_vaderPolarity.csv'
         vader_df = pd.read_csv(vader_file)
 
-        output_dict[indiv] = [toxic_df, polarity_df, vader_df, cancel_date]
+        output_dict[indiv] = [toxic_df, vader_df, cancel_date]
 
     return output_dict
 
-def import_data(test_dir, genre1_dir, genre2_dir, genre3_dir):
+def tweet_helper_func(base_dir, input_list, cancel_date):
+    '''
+    helper function for import_acc_data
+    imports tweets from individual's account 6 months before and after cancellation
+    '''
+    output_dict = {}
+
+    for indiv in input_list:
+        input_path = base_dir + indiv + "_tweets.csv"
+        df = pd.read_csv(input_path)
+        output_dict[indiv] = [df, cancel_date]
+
+    return output_dict
+
+def import_acc_data(base_dir):
+    '''
+    imports data of tweets gathered from target individual's twitter acccounts
+    ''' 
+    # initalize variables
+    male_kpop_dict = {}
+    female_kpop_dict = {}
+    male_hiphop_dict = {}
+    female_hiphop_dict = {}
+    male_pop_dict = {}
+    female_pop_dict = {}
+
+    # kpop dicts 
+    male_kpop_dict = tweet_helper_func(base_dir, male_kpop_list, maleKpop_cancel_date)
+    female_kpop_dict = tweet_helper_func(base_dir, female_kpop_list, femaleKpop_cancel_date)
+
+    male_hiphop_dict = tweet_helper_func(base_dir, male_hiphop_list, maleHH_cancel_date)
+    female_hiphop_dict = tweet_helper_func(base_dir, female_hiphop_list, femaleHH_cancel_date)
+
+    male_pop_dict = tweet_helper_func(base_dir, male_pop_list, malePop_cancel_date)
+    female_pop_dict = tweet_helper_func(base_dir, female_pop_list, femalePop_cancel_date)
+
+    return [male_kpop_dict, female_kpop_dict, 
+            male_hiphop_dict, female_hiphop_dict, 
+            male_pop_dict, female_pop_dict]
+
+def import_main_data(test_dir, genre1_dir, genre2_dir, genre3_dir):
     '''
     main func used for data target
     '''
@@ -72,10 +116,11 @@ def import_data(test_dir, genre1_dir, genre2_dir, genre3_dir):
         female_hiphop_dict, femaleHH_cancel_date) 
     
     # pop dicts
-    # male_pop_dict = data_helper_func(genre3_dir, male_pop_list, 
-    #     male_pop_dict, malePop_cancel_date)
-    # female_pop_dict = data_helper_func(genre3_dir, female_pop_list, 
-    #     female_pop_dict, femalePop_cancel_date) 
+    male_pop_dict = data_helper_func(genre3_dir, male_pop_list, 
+        male_pop_dict, malePop_cancel_date)
+    female_pop_dict = data_helper_func(genre3_dir, female_pop_list, 
+        female_pop_dict, femalePop_cancel_date) 
 
     return [male_kpop_dict, female_kpop_dict, 
-            male_hiphop_dict, female_hiphop_dict]
+            male_hiphop_dict, female_hiphop_dict, 
+            male_pop_dict, female_pop_dict]

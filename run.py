@@ -8,6 +8,8 @@ sys.path.insert(0, 'src') # add src to paths
 import etl
 from eda import calculate_stats
 from preprocessing import calculate_avgs
+import parasocial
+from visuals import create_visuals
 # from toxicity_script import toxicityFunc
 # from vader_script import polarityFunc
 # from polarity_script import calc_textblob_polarity
@@ -25,15 +27,12 @@ def main(targets):
         # list of dicts for each genre divided by gender containing datasets 
         # aka two datasets per genre for male + female individuals
         # data generated from toxicity, polarity, and vader scripts
-        data_list = etl.import_data(**data_cfg)
+        data_list = etl.import_main_data(**data_cfg)
+
+        tweet_list = etl.import_acc_data("./data/raw/")
 
         # for running API scripts
         # data = pd.read_csv(".//data/raw/Saweetie_tweets.csv")
-
-    if 'size' in targets:
-        # checks size of dataset 
-        df = pd.read_csv("./data/temp/")
-        print(len(df))
 
     if 'eda' in targets:
         # data_list consists of dataframes for each gender per genre
@@ -43,10 +42,19 @@ def main(targets):
 
     if 'preprocessing' in targets:
         with open('config/preprocessing-params.json') as fh:
-            data_cfg = json.load(fh)
+            preproc_cfg = json.load(fh)
 
         for data_dict in data_list:
-            calculate_avgs(data_dict, **data_cfg)
+            calculate_avgs(data_dict, **preproc_cfg)
+
+    if "parasocial" in targets:
+        parasocial.create_parasocial_dfs("./data/temp/", tweet_list, data_list)
+        
+    if "visuals" in targets:
+        with open('config/visuals-params.json') as fh:
+            visual_cfg = json.load(fh)
+
+        create_visuals(**visual_cfg)
 
     # UNCOMMENT IF RUNNING DATA ON API SCRIPTS
     # if 'toxicity' in targets:
