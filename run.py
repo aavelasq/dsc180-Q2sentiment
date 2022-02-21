@@ -10,6 +10,7 @@ from eda import calculate_stats
 from preprocessing import calculate_avgs
 import parasocial
 from visuals import create_visuals
+from background import calculate_median
 # from toxicity_script import toxicityFunc
 # from vader_script import polarityFunc
 # from polarity_script import calc_textblob_polarity
@@ -55,6 +56,13 @@ def main(targets):
             visual_cfg = json.load(fh)
 
         create_visuals(**visual_cfg)
+            
+    if 'background' in targets:
+        with open('config/background-params.json') as fh:
+            background_cfg = json.load(fh)
+
+        calculate_median(data_list, **background_cfg)
+
 
     # UNCOMMENT IF RUNNING DATA ON API SCRIPTS
     # if 'toxicity' in targets:
