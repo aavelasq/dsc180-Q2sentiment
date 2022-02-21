@@ -33,6 +33,15 @@ def preprocess_ps_df(strong_df, weak_df, roll_days):
 
     return pd.concat([strong_df, weak_df])
 
+def overall_means(toxic_df, vader_df):
+    before_toxic = toxic_df[toxic_df["days_cancel"] < 0].mean()
+    after_toxic = toxic_df[toxic_df["days_cancel"] > 0].mean()
+    before_vader = vader_df[vader_df["days_cancel"] < 0].mean()
+    after_vader = vader_df[vader_df["days_cancel"] > 0].mean()
+
+    print(before_toxic)
+    print(after_toxic)
+
 def ps_line_plot(out_dir, df, metric):
     plt.figure(figsize = (15,10))
     sns.lineplot(data=df, x="days_cancel", y=metric, hue="group")
@@ -58,6 +67,9 @@ def create_visuals(arg1, arg2):
     # makes sure time period is 6 months before and after cancellation date
     toxic_ps_df = toxic_ps_df[(toxic_ps_df["days_cancel"] >= -183) | (toxic_ps_df["days_cancel"] <= 183)]
     vader_ps_df = vader_ps_df[(vader_ps_df["days_cancel"] >= -183) | (vader_ps_df["days_cancel"] <= 183)]
+    toxic_ps_df.to_csv("./data/temp/toxic_ps.csv")
+    vader_ps_df.to_csv("./data/temp/vader_ps.csv")
+    # overall_means(toxic_ps_df, vader_ps_df)
 
     plt.clf()
     ps_line_plot("./data/out/", toxic_ps_df, "severe_toxicity")
