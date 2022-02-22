@@ -67,15 +67,15 @@ def calc_engage_metric(df):
     final_df = temp_df.copy().groupby("indiv").count().reset_index()[['indiv']]
     final_df["num_tweets"] = temp_df.groupby("indiv").count().reset_index()['text']
     
-    # calculates total mean engagement
-    engage_num = (temp_df.groupby(by="indiv").mean().reset_index()['retweet_count'] + temp_df.groupby(
-        by="indiv").mean().reset_index()['reply_count'] + temp_df.groupby(
-        by="indiv").mean().reset_index()['like_count'] + temp_df.groupby(
-        by="indiv").mean().reset_index()['quote_count'])
+    # calculates total engagement
+    engage_num = (temp_df.groupby(by="indiv").sum().reset_index()['retweet_count'] + temp_df.groupby(
+        by="indiv").sum().reset_index()['reply_count'] + temp_df.groupby(
+        by="indiv").sum().reset_index()['like_count'] + temp_df.groupby(
+        by="indiv").sum().reset_index()['quote_count'])
     final_df["num_engage"] = engage_num
 
     # calculates engagement ratio (mean engagement/# of total tweets)
-    final_df["engage_ratio"] = final_df["num_engage"]
+    final_df["engage_ratio"] = final_df["num_engage"]/final_df["num_tweets"]
     final_df = final_df.sort_values(by="engage_ratio", ascending=False).reset_index(drop=True)
     
     return final_df
