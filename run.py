@@ -58,6 +58,8 @@ def main(targets):
         create_visuals(**visual_cfg)
             
     if 'background' in targets:
+        # change metric in params:
+        # severe_toxicity, insult, Compound, Negative
         with open('config/background-params.json') as fh:
             background_cfg = json.load(fh)
 
