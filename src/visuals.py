@@ -20,33 +20,45 @@ def count_days(row):
 
     return row["created_at"] - cancel_date
 
-def preprocess_ps_df(strong_df, weak_df, roll_days): 
+def preprocess_ps_df(strong_df, weak_df, roll_days):
+    '''
+    combines strong and weak grouped artist dfs into one df
+    '''
     strong_df = convert_dates(strong_df) # convert to datetime obj
+    # group by # of days canceled
     strong_df['days_cancel'] = strong_df.apply(count_days, axis=1)
-    strong_df = strong_df.groupby(by=["days_cancel"]).mean().rolling(roll_days).mean().reset_index()
-    strong_df["group"] = "strong"
+    # calculate rolling avg then calculate median
+    strong_df = strong_df.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
+    strong_df["group"] = "strong" # label group
 
     weak_df = convert_dates(weak_df) # convert to datetime obj
     weak_df['days_cancel'] = weak_df.apply(count_days, axis=1)
-    weak_df = weak_df.groupby(by=["days_cancel"]).mean().rolling(roll_days).mean().reset_index()
+    weak_df = weak_df.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     weak_df["group"] = "weak"
 
-    return pd.concat([strong_df, weak_df])
+    return pd.concat([strong_df, weak_df]).reset_index(drop=True)
 
-def overall_means(toxic_df, vader_df):
-    before_toxic = toxic_df[toxic_df["days_cancel"] < 0].mean()
-    after_toxic = toxic_df[toxic_df["days_cancel"] > 0].mean()
-    before_vader = vader_df[vader_df["days_cancel"] < 0].mean()
-    after_vader = vader_df[vader_df["days_cancel"] > 0].mean()
+def overall_avgs(toxic_df, vader_df):
+    '''
+    calculates avg before and after cancellation for input df
+    '''
+    before_toxic = toxic_df[toxic_df["days_cancel"] < 0].median()
+    after_toxic = toxic_df[toxic_df["days_cancel"] > 0].median()
+    before_vader = vader_df[vader_df["days_cancel"] < 0].median()
+    after_vader = vader_df[vader_df["days_cancel"] > 0].median()
 
     print(before_toxic)
     print(after_toxic)
 
 def ps_line_plot(out_dir, df, metric):
+    '''
+    generates line plot based on inputted df
+    '''
     plt.figure(figsize = (15,10))
     sns.lineplot(data=df, x="days_cancel", y=metric, hue="group")
     plt.xlabel('# Days Before and After Cancellation')
     plt.ylabel(str(metric))
+    plt.axvline(0, 0.04, 0.99,color="red")
 
     file_name = str(metric) + "_psLine.png"
     out_path = os.path.join(out_dir, file_name)
@@ -69,7 +81,7 @@ def create_visuals(arg1, arg2):
     vader_ps_df = vader_ps_df[(vader_ps_df["days_cancel"] >= -183) | (vader_ps_df["days_cancel"] <= 183)]
     toxic_ps_df.to_csv("./data/temp/toxic_ps.csv")
     vader_ps_df.to_csv("./data/temp/vader_ps.csv")
-    # overall_means(toxic_ps_df, vader_ps_df)
+    overall_avgs(toxic_ps_df, vader_ps_df)
 
     plt.clf()
     ps_line_plot("./data/out/", toxic_ps_df, "severe_toxicity")

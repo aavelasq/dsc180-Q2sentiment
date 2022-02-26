@@ -19,8 +19,6 @@ from background import calculate_median
 cancellation_date = datetime.datetime(2021, 9, 15)
 
 def main(targets):
-    # data_config = json.load(open('config/data-params.json'))
-
     if 'data' in targets:
         with open('config/data-params.json') as fh:
             data_cfg = json.load(fh)
@@ -48,6 +46,8 @@ def main(targets):
         for data_dict in data_list:
             calculate_avgs(data_dict, **preproc_cfg)
 
+    # parasocial rq
+
     if "parasocial" in targets:
         parasocial.create_parasocial_dfs("./data/temp/", tweet_list, data_list)
         
@@ -56,7 +56,9 @@ def main(targets):
             visual_cfg = json.load(fh)
 
         create_visuals(**visual_cfg)
-            
+
+    # background rq
+      
     if 'background' in targets:
         # change metric in params:
         # severe_toxicity, insult, Compound, Negative

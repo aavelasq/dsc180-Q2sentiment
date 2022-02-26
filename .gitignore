@@ -8,3 +8,4 @@ __pycache__
 /data/temp/
 /notebooks
 /.ipynb_checkpoints
+/data/test_toxicity.csv
