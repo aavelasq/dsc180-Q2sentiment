@@ -127,19 +127,18 @@ def create_visuals(arg1, arg2, arg3):
     discrim_before, discrim_after = word_frequency(discrim_dfs)
     assualt_before, assualt_after = word_frequency(assualt_dfs)
     
-    out = '/Users/nikithagopal/Documents/dsc30-pa1/dsc180a_indiv/data/out/'
     plt.clf()
-    plot_ti(out, misinfo_before, "Misinformation_Before")
+    plot_ti("./data/out/", misinfo_before, "Misinformation_Before")
     plt.clf()
-    plot_ti(out, misinfo_after, "Misinformation_After")
+    plot_ti("./data/out/", misinfo_after, "Misinformation_After")
     
     plt.clf()
-    plot_ti(out, discrim_before, "Discrimination_Before")
+    plot_ti("./data/out/", discrim_before, "Discrimination_Before")
     plt.clf()
-    plot_ti(out, discrim_after, "Discrimination_After")
+    plot_ti("./data/out/", discrim_after, "Discrimination_After")
 
     
     plt.clf()
-    plot_ti(out, assualt_before, "Assualt_Before")
+    plot_ti("./data/out/", assualt_before, "Assualt_Before")
     plt.clf()
-    plot_ti(out, assualt_after, "Assualt_After")
+    plot_ti("./data/out/", assualt_after, "Assualt_After")
