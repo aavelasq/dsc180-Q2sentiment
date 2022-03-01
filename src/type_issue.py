@@ -97,6 +97,3 @@ def create_issue_df(out_dir, tweet_list, data_list):
     
     final_assualt = pd.concat(assualt_dfs)
     final_assualt.to_csv(out_dir + "assualt_ti.csv", index=False)
-    
-    return final_misinfo, final_discrim, final_assualt
-    
