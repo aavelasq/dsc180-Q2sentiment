@@ -9,7 +9,7 @@ import etl
 from eda import calculate_stats
 from preprocessing import calculate_avgs
 import parasocial
-from visuals import create_visuals
+from visuals_ps import create_visuals
 from background import calculate_median
 # from toxicity_script import toxicityFunc
 # from vader_script import polarityFunc

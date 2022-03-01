@@ -20,37 +20,44 @@ def count_days(row):
 
     return row["created_at"] - cancel_date
 
-def preprocess_ps_df(strong_df, weak_df, roll_days):
+def preprocess_ps_df(strong_df, weak_df, roll_days, canceled=False):
     '''
     combines strong and weak grouped artist dfs into one df
     '''
     strong_df = convert_dates(strong_df) # convert to datetime obj
     # group by # of days canceled
     strong_df['days_cancel'] = strong_df.apply(count_days, axis=1)
+    # subsets df based on canceled or control group 
+    if canceled == True:
+        strong_df = strong_df[(strong_df['indiv'] == "lucas") | (strong_df['indiv'] == "giselle") | (strong_df['indiv'] == "nicki")]
+    elif canceled == False:
+        strong_df = strong_df[(strong_df['indiv'] == "jaemin") | (strong_df['indiv'] == "ryujin")]
     # calculate rolling avg then calculate median
     strong_df = strong_df.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     strong_df["group"] = "strong" # label group
 
     weak_df = convert_dates(weak_df) # convert to datetime obj
     weak_df['days_cancel'] = weak_df.apply(count_days, axis=1)
+    if canceled == True:
+        weak_df = weak_df[(weak_df['indiv'] == "zayn") | (weak_df['indiv'] == "doja") | (weak_df['indiv'] == "dababy")]
+    elif canceled == False:
+        weak_df = weak_df[(weak_df['indiv'] == "harry") | (weak_df['indiv'] == "adele") | (weak_df['indiv'] == "lil baby") | (weak_df['indiv'] == "saweetie")]
     weak_df = weak_df.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     weak_df["group"] = "weak"
 
     return pd.concat([strong_df, weak_df]).reset_index(drop=True)
 
-def overall_avgs(toxic_df, vader_df):
+def overall_avgs(toxic_df):
     '''
     calculates avg before and after cancellation for input df
     '''
-    before_toxic = toxic_df[toxic_df["days_cancel"] < 0].median()
-    after_toxic = toxic_df[toxic_df["days_cancel"] > 0].median()
-    before_vader = vader_df[vader_df["days_cancel"] < 0].median()
-    after_vader = vader_df[vader_df["days_cancel"] > 0].median()
+    before_toxic = toxic_df[toxic_df["days_cancel"] < 0].groupby(by="group").median()
+    after_toxic = toxic_df[toxic_df["days_cancel"] > 0].groupby(by="group").median()
 
     print(before_toxic)
     print(after_toxic)
 
-def ps_line_plot(out_dir, df, metric):
+def ps_line_plot(out_dir, df, metric, canceled=False):
     '''
     generates line plot based on inputted df
     '''
@@ -60,35 +67,44 @@ def ps_line_plot(out_dir, df, metric):
     plt.ylabel(str(metric))
     plt.axvline(0, 0.04, 0.99,color="red")
 
-    file_name = str(metric) + "_psLine.png"
+    if canceled == True:
+        file_name = str(metric) + "_cancel_psLine.png"
+    else: 
+        file_name = str(metric) + "_control_psLine.png"
     out_path = os.path.join(out_dir, file_name)
     plt.savefig(out_path, bbox_inches='tight')
+
+def combine_dfs(strong_df, weak_df, canceled=False):
+    # preprocess data
+    toxic_ps_df = preprocess_ps_df(strong_df, weak_df, "14d", canceled)[[
+        "days_cancel", "severe_toxicity", "insult", "group"]]
+    # convert timedelta to int 
+    toxic_ps_df["days_cancel"] = toxic_ps_df["days_cancel"].dt.days
+    # makes sure time period is 6 months before and after cancellation date
+    toxic_ps_df = toxic_ps_df[(toxic_ps_df["days_cancel"] >= -183) | (toxic_ps_df["days_cancel"] <= 183)]
+
+    return toxic_ps_df
 
 def create_visuals(arg1, arg2):
     strong_ps_df = pd.read_csv(arg1)
     weak_ps_df = pd.read_csv(arg2)
 
-    # preprocess data
-    toxic_ps_df = preprocess_ps_df(strong_ps_df, weak_ps_df, "14d")[[
-        "days_cancel", "severe_toxicity", "insult", "group"]]
-    vader_ps_df = preprocess_ps_df(strong_ps_df, weak_ps_df, "28d")[[
-        "days_cancel", "Compound", "Negative", "group"]]
-    # convert timedelta to int 
-    toxic_ps_df["days_cancel"] = toxic_ps_df["days_cancel"].dt.days
-    vader_ps_df["days_cancel"] = vader_ps_df["days_cancel"].dt.days
-    # makes sure time period is 6 months before and after cancellation date
-    toxic_ps_df = toxic_ps_df[(toxic_ps_df["days_cancel"] >= -183) | (toxic_ps_df["days_cancel"] <= 183)]
-    vader_ps_df = vader_ps_df[(vader_ps_df["days_cancel"] >= -183) | (vader_ps_df["days_cancel"] <= 183)]
-    toxic_ps_df.to_csv("./data/temp/toxic_ps.csv")
-    vader_ps_df.to_csv("./data/temp/vader_ps.csv")
-    overall_avgs(toxic_ps_df, vader_ps_df)
+    # for canceled indivs
+    canceled_ps_df = combine_dfs(strong_ps_df, weak_ps_df, True)
+    canceled_ps_df.to_csv("./data/temp/cancel_toxic_ps.csv")
+    overall_avgs(canceled_ps_df)
 
     plt.clf()
-    ps_line_plot("./data/out/", toxic_ps_df, "severe_toxicity")
+    ps_line_plot("./data/out/", canceled_ps_df, "severe_toxicity", True)
     plt.clf()
-    ps_line_plot("./data/out/", toxic_ps_df, "insult")
-    plt.clf()
-    ps_line_plot("./data/out/", vader_ps_df, "Compound")
-    plt.clf()
-    ps_line_plot("./data/out/", vader_ps_df, "Negative")
+    ps_line_plot("./data/out/", canceled_ps_df, "insult", True)
 
+    # for control indivs
+    control_ps_df = combine_dfs(strong_ps_df, weak_ps_df, False)
+    control_ps_df.to_csv("./data/temp/control_toxic_ps.csv")
+    overall_avgs(control_ps_df)
+
+    plt.clf()
+    ps_line_plot("./data/out/", control_ps_df, "severe_toxicity", False)
+    plt.clf()
+    ps_line_plot("./data/out/", control_ps_df, "insult", False)
