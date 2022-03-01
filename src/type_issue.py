@@ -48,11 +48,11 @@ def convert_dates(data):
     
     return data
 
-def group_artists_issue(tweet_list, data_list):
+def group_artists_issue():
     
     discrimination = ['doja', 'dababy', 'giselle']
     misinformation = ['nicki']
-    assualt = ["zayn", "jaemin"]
+    assualt = ["zayn", "lucas"]
 
     return discrimination, assualt, misinformation
 
@@ -63,7 +63,7 @@ def create_issue_df(out_dir, tweet_list, data_list):
     discrim_dfs = []
     assualt_dfs = []
     
-    discrimination, assualt, misinformation = group_artists_issue(tweet_list, data_list)
+    discrimination, assualt, misinformation = group_artists_issue()
     
     for data_dict in data_list:
         artist_names = list(data_dict.keys())

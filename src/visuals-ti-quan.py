@@ -12,6 +12,14 @@ cancel_dates = {"lucas": datetime.datetime(2021,8,24), "giselle": datetime.datet
                 "zayn": datetime.datetime(2021,10,28), "doja": datetime.datetime(2020,5,25), 
                 "harry": datetime.datetime(2021,10,28), "adele": datetime.datetime(2020,5,25)}
 
+def count_days(row):
+    '''
+    helper function to count number of days since deplatform date
+    '''
+    cancel_date = cancel_dates[row["indiv"].lower()]
+
+    return row["created_at"] - cancel_date
+
 def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
 
     misinfo_dfs = convert_dates(misinfo_dfs) # convert to datetime obj
@@ -20,7 +28,7 @@ def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
     # calculate rolling avg then calculate median
     misinfo_dfs = misinfo_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     misinfo_dfs["group"] = "misinfo" # label group
-    print('pre_missinfo')
+
     
     discrim_dfs = convert_dates(discrim_dfs) # convert to datetime obj
     # group by # of days canceled
@@ -28,7 +36,6 @@ def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
     # calculate rolling avg then calculate median
     discrim_dfs = discrim_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     discrim_dfs["group"] = "discrim" # label group
-    print('pre_discrim')
     
     assualt_dfs = convert_dates(assualt_dfs) # convert to datetime obj
     # group by # of days canceled
@@ -36,7 +43,6 @@ def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
     # calculate rolling avg then calculate median
     assualt_dfs = assualt_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     assualt_dfs["group"] = "assualt" # label group
-    print('pre_assualt')
     
     final = pd.concat([misinfo_dfs, discrim_dfs, assualt_dfs])
     return final
@@ -70,6 +76,8 @@ def create_visuals_quan(arg1, arg2, arg3):
     
     # makes sure time period is 6 months before and after cancellation date
     combined = combined[(combined["days_cancel"] >= -183) | (combined["days_cancel"] <= 183)]
+
+    combined.to_csv("./data/temp/" + "final_ti.csv", index=False)
     
     plt.clf()
     ps_line_plot("./data/out/", combined, "severe_toxicity")

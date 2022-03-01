@@ -77,7 +77,7 @@ def word_frequency(df):
     
     stop_words = set(stopwords.words('english'))
     
-    artist_names = ['doja', 'cat', 'jaemin', 'giselle', 'zayn', 'malik', 'nicki', 'minaj', 'dababy']
+    artist_names = ['doja', 'cat', 'lucas', 'giselle', 'zayn', 'malik', 'nicki', 'minaj', 'dababy']
     
     df['text'] = df['text'].apply(remove_url)
     df['text'] = df['text'].apply(splitWords)
