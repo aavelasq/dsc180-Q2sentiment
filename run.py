@@ -11,6 +11,9 @@ from preprocessing import calculate_avgs
 import parasocial
 from visuals_ps import create_visuals
 from background import calculate_median
+from visuals_ti_qual import create_visuals_qual
+from visuals_ti_quan import create_visuals_quan
+import type_issue
 # from toxicity_script import toxicityFunc
 # from vader_script import polarityFunc
 # from polarity_script import calc_textblob_polarity
@@ -56,6 +59,18 @@ def main(targets):
             visual_cfg = json.load(fh)
 
         create_visuals(**visual_cfg)
+
+    # type of issue rq
+
+    if "typeOFIssue" in targets:
+        type_issue.create_issue_df("./data/temp/", tweet_list, data_list)
+        
+    if "visuals_ti" in targets:
+        with open('config/visuals-issue-params.json') as fh:
+            visual_cfg = json.load(fh)
+
+        create_visuals_qual(**visual_cfg)
+        create_visuals_quan(**visual_cfg)
 
     # background rq
       
@@ -104,4 +119,3 @@ def main(targets):
 if __name__ == '__main__':
     targets = sys.argv[1:]
     main(targets)
-
