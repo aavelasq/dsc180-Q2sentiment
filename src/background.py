@@ -28,32 +28,32 @@ female_hiphop_list = ['NICKI', 'SAWEETIE']
 male_pop_list = ['ZAYN', 'HARRY']
 female_pop_list = ['DOJA', 'ADELE']
 
-def create_medianLinePlot(out_dir, can_df, con_df, category, metric):
+def create_medianLinePlot(out_dir, df, category, metric, hue):
     '''
     generate and save median line plots for specified metric and
     category for cancelled and control groups
     '''
-    if category == "kpop":
-        c_name = "K-Pop"
-    elif category == "hiphop":
-        c_name = "Hip Hop"
-    elif category == "pop" or category == "female" or category == "male":
-        c_name = str.upper(category[0]) + category[1:]
+    if category == "genre":
+        c_name = "Canceled K-Pop vs. Hip-hop vs Pop Artists "
+        med = "Median "
+    elif category == "sex":
+        c_name = "Canceled Female vs. Male Artists "
+        med = "Median " 
+    elif category == "all":
+        c_name = "All Canceled Artists "
+        med = ""
+    
+    if metric == "severe_toxicity":
+        y_label = "Severe Toxicity"
+    elif metric == "insult":
+        y_label = "Insult"
 
     plt.figure(figsize = (10,5))
-    sns.lineplot(data=can_df, x="Days Before & After Controversy", y=metric)
-    sns.lineplot(data=con_df, x="Days Before & After Controversy", y=metric)
+    sns.lineplot(data=df, x="Days Before & After Controversy", y=metric, hue=hue)
+    plt.axvline(0, 0.01, 0.99,color="red")
     plt.xlabel('# Days Before and After Cancellation')
-    plt.title(c_name + " Cancelled vs Control Group Median " + metric + " Levels")
-    plt.legend(["Cancelled", "Control"])
-    if metric == "severe_toxicity":
-        plt.ylabel("Median Severe Toxicity Levels")
-    elif metric == "insult":
-        plt.ylabel("Median Insult Levels")
-    elif metric == "Compound":
-        plt.ylabel("Median Compound Polarity Levels")
-    elif metric == "Negative":
-        plt.ylabel("Median Negative Polarity Levels")
+    plt.ylabel(med + y_label + " Levels")
+    plt.title(c_name + "Group " + med + y_label + " Levels")
     file_name = category + "_median_" + metric + "Plot.png"
     out_path = os.path.join(out_dir, file_name)
     plt.savefig(out_path, bbox_inches='tight')
@@ -105,22 +105,17 @@ def combine_data(artist_dict, female_list=None, male_list=None, gender=None):
     concatenate data according to what group is provided
     '''
     if gender == "female":
-        cat_control = pd.concat([artist_dict[female_kpop_list[1]], artist_dict[female_hiphop_list[1]], artist_dict[female_pop_list[1]]])
         cat_cancelled = pd.concat([artist_dict[female_kpop_list[0]], artist_dict[female_hiphop_list[0]], artist_dict[female_pop_list[0]]])
         
     elif gender == "male":
-        cat_control =  pd.concat([artist_dict[male_kpop_list[1]], artist_dict[male_hiphop_list[1]], artist_dict[male_pop_list[1]]])
         cat_cancelled = pd.concat([artist_dict[male_kpop_list[0]], artist_dict[male_hiphop_list[0]], artist_dict[male_pop_list[0]]])
     
     else:
         cat_cancelled = pd.concat([artist_dict[female_list[0]], artist_dict[male_list[0]]])
-        cat_control = pd.concat([artist_dict[female_list[1]], artist_dict[male_list[1]]])
-        cat_cancelled_median = cat_cancelled.groupby("Days Before & After Controversy").median()
-        cat_control_median = cat_control.groupby("Days Before & After Controversy").median()
         
     cat_cancelled_median = cat_cancelled.groupby("Days Before & After Controversy").median()
-    cat_control_median = cat_control.groupby("Days Before & After Controversy").median()
-    return [cat_cancelled_median, cat_control_median]
+
+    return cat_cancelled_median.reset_index()
 
 def days_after(df, metric):
     '''
@@ -128,56 +123,139 @@ def days_after(df, metric):
     pre-controversy levels
     '''
     df = df.reset_index()
-    contoversy_med = df[df["Days Before & After Controversy"] == 0][metric].item()
+    day_of_con = 0
+    while day_of_con not in df["Days Before & After Controversy"].values:
+        day_of_con -= 1
+
+    # calculate days after for grouped category df
+    if "group" in df:
+        if "male" in df["group"].values:
+            m_df = df[df["group"] == "male"]
+            f_df = df[df["group"] == "female"]
+            g_list = [m_df, f_df]
+           
+
+        elif "pop" in df["group"].values:
+            k_df = df[df["group"] == "kpop"]
+            h_df = df[df["group"] == "hiphop"]
+            p_df = df[df["group"] == "pop"]
+            g_list = [k_df, h_df, p_df]
+        g_df = pd.DataFrame()
+
+        for df in g_list:
+                contoversy_med = df[df["Days Before & After Controversy"] == day_of_con][metric].item()
+                k_stats_aft_con = df[df["Days Before & After Controversy"] > 0]
+                try:
+                    first_occurence = k_stats_aft_con[k_stats_aft_con[metric] < contoversy_med].iloc[0]
+                except:
+                    d = {"Days Before & After Controversy": "Hasn't been reached", metric: None}
+                    first_occurence = pd.Series(data=d)
+                
+                if len(g_df) == 0:
+                    g_df = first_occurence.rename(df["group"].iloc[0]).drop(labels=["group", "index"])
+                else:
+                    g_df = pd.concat([g_df, first_occurence.rename(df["group"].iloc[0]).drop(labels=["group", "index"])], axis=1) 
+        return g_df  
+
+    # calculate days after return to median for other dfs
+    contoversy_med = df[df["Days Before & After Controversy"] == day_of_con][metric].item()
+
     k_stats_aft_con = df[df["Days Before & After Controversy"] > 0]
     try:
-        first_occurence = k_stats_aft_con[k_stats_aft_con[metric] <= contoversy_med].iloc[0]
+        first_occurence = k_stats_aft_con[k_stats_aft_con[metric] < contoversy_med].iloc[0]
     except:
         d = {"Days Before & After Controversy": "Hasn't been reached", metric: None}
         first_occurence = pd.Series(data=d)
     return first_occurence
+    
 
 def calculate_median(data_list, out_dir, temp_dir, metric):
-
+    #clean/transform all artist data & add to dict
     artist_dict = transform_data(data_list,metric)
     all_artist = {"kpop":[female_kpop_list, male_kpop_list], "hiphop":[female_hiphop_list, male_hiphop_list], "pop":[female_pop_list, male_pop_list],
                     "female":None, "male":None}
+    # make empty dfs
+    all_can_df = pd.DataFrame()
+    can_all_art_ret = pd.DataFrame()
+    fm_df = pd.DataFrame()
+    khp_df = pd.DataFrame()
 
     # iterate through all artists
     for k,v in all_artist.items():
+        
         # combine data by gender or industry
         if k == "female" or k == "male":
-            cat_meds = combine_data(artist_dict, gender=k)
+            cat_cancelled_median = combine_data(artist_dict, gender=k).rolling(5).median()
         else:
-            cat_meds = combine_data(artist_dict, v[0], v[1])  
+            # retrieve male and female canceled artists
+            f_name = v[0][0]
+            m_name = v[1][0]
+            can_female_df =  artist_dict[f_name]
+            can_male_df = artist_dict[m_name]
+            # add identifier column
+            can_female_df["artist"] = f_name
+            can_male_df["artist"] = m_name
 
-        # combined data for cancelled groups
-        cat_cancelled_median = cat_meds[0]
-        # combined data for control groups
-        cat_control_median = cat_meds[1]
+            # append artist df to main df
+            if len(all_can_df) == 0:
+                all_can_df = can_female_df
+                all_can_df = pd.concat([all_can_df, can_male_df], ignore_index=True) 
+            else:
+                all_can_df = pd.concat([all_can_df, can_female_df, can_male_df], ignore_index=True)  
 
-        if k == "female" or k == "male" or k == "hiphop" :
-            cat_cancelled_median = cat_meds[0].rolling(5).median()
-            cat_control_median = cat_meds[1].rolling(5).median()
+            # calculate days returning to median for artists
+            can_female_return = days_after(can_female_df.drop(columns=["artist"]), metric)
+            can_male_return = days_after(can_male_df.drop(columns=["artist"]), metric)
+            
+            comb_can_ret = pd.concat([can_female_return.rename(f_name),can_male_return.rename(m_name)], axis=1)
 
-        # generate line plot of median metric level for specific group   
-        create_medianLinePlot(out_dir, cat_cancelled_median, cat_control_median, k , metric)
+            # append artist return to median df to main df
+            if len(can_all_art_ret) == 0:
+                can_all_art_ret = comb_can_ret
+            else:
+                can_all_art_ret = pd.concat([can_all_art_ret, comb_can_ret], axis=1)
 
-        # save df that creates the line plot
-        cat_cancelled_median.reset_index().to_csv(temp_dir +  k + "_CancelledMedian.csv")
-        cat_control_median.reset_index().to_csv(temp_dir +  k +"_ControlMedian.csv")
-        
-        # calculate the number of days until median metric drops below controversy date levels
-        return_to_med_can = days_after(cat_cancelled_median, metric)
-        return_to_med_con = days_after(cat_control_median, metric)
-        
-        # combine control and cancelled
-        final_days_after = pd.concat([return_to_med_can.rename("cancelled"),return_to_med_con.rename("control")], axis=1)
+            cat_cancelled_median = combine_data(artist_dict, v[0], v[1])  
 
-        # save the df above
-        final_days_after.reset_index().to_csv(temp_dir  + k  + "_" + metric + "_" + "daysReturnMed.csv")
+        if k == "hiphop":
+            cat_cancelled_median = cat_cancelled_median.rolling(5).median()
+
+        # add indicator column
+        cat_cancelled_median["group"] = k
+
+        # append group df to main df
+        if k == "female" or k == "male":
+            if len(fm_df) == 0:
+                fm_df = cat_cancelled_median
+            else:
+                fm_df = pd.concat([fm_df, cat_cancelled_median], ignore_index=True)
+        else:
+            if len(khp_df) == 0:
+                khp_df = cat_cancelled_median
+            else:
+                khp_df = pd.concat([khp_df, cat_cancelled_median], ignore_index=True)
+
+    # plotting line plots for groups and artists
+    create_medianLinePlot(out_dir, all_can_df, "all" , metric, "artist")
+    create_medianLinePlot(out_dir, fm_df, "sex" , metric, "group")
+    create_medianLinePlot(out_dir, khp_df, "genre" , metric, "group")
+
+    # saving plot data to csv
+    all_can_df.reset_index().to_csv(temp_dir +   "all_" + metric + "_Cancelled.csv")
+    fm_df.reset_index().to_csv(temp_dir +   "sex_" + metric + "_CancelledMedian.csv")
+    khp_df.reset_index().to_csv(temp_dir + "genre_" + metric + "_CancelledMedian.csv")
+
+    # calculating number of days return to median to groups
+    return_to_med_fm = days_after(fm_df, metric)
+    return_to_med_khp = days_after(khp_df, metric)
+
+    # saving data to csv
+    return_to_med_fm.reset_index().to_csv(temp_dir  + "sex_" + metric + "_" + "daysReturnMed.csv")
+    return_to_med_khp.reset_index().to_csv(temp_dir  + "genre_" + metric + "_" + "daysReturnMed.csv")
+    can_all_art_ret.drop("index").reset_index().to_csv(temp_dir + "all_canceled_artists_" + metric+ "Return.csv")
 
 
+    
 
 
     
