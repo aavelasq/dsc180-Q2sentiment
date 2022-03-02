@@ -109,7 +109,7 @@ def create_visuals_qual(arg1, arg2, arg3):
     
     misinfo_dfs = pd.read_csv(arg1)
     discrim_dfs = pd.read_csv(arg2)
-    assualt_dfs = pd.read_csv(arg2)
+    assualt_dfs = pd.read_csv(arg3)
 
     misinfo_dfs, discrim_dfs, assualt_dfs = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d")
     
