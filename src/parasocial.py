@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import ast
 from eda import convert_dates
 from preprocessing import clean_toxic_df
@@ -162,8 +161,6 @@ def create_parasocial_dfs(out_dir, tweet_list, data_list):
     # initialize variables
     strong_Tox_dfs = []
     weak_Tox_dfs = []
-    strong_Vad_dfs = []
-    weak_Vad_dfs = []
 
     # group artists into strong vs weak parasocial relationship
     strong_indivs, weak_indivs = group_artists(tweet_list, data_list)
@@ -175,8 +172,6 @@ def create_parasocial_dfs(out_dir, tweet_list, data_list):
             artist_name = indiv.lower()
 
             toxicity_data = data_dict[indiv][0]
-            vader_data = data_dict[indiv][1]
-            cancel_date = data_dict[indiv][2]
 
             # preprocess toxic df 
             toxic_df = clean_toxic_df(toxicity_data) # remove invalid values
@@ -185,27 +180,16 @@ def create_parasocial_dfs(out_dir, tweet_list, data_list):
             toxic_df = toxic_df.groupby(["created_at"]).mean().reset_index() 
             toxic_df['indiv'] = artist_name
 
-            # preprocess vader df
-            vader_df = convert_dates(vader_data) # convert to datetime obj
-            # group by how many days away from cancel date
-            vader_df = vader_df.groupby(["created_at"]).mean().reset_index()
-            vader_df['indiv'] = artist_name
-            vader_df = vader_df[["indiv", "created_at", "Compound", "Negative"]]
-
             if artist_name in strong_indivs:
                 strong_Tox_dfs.append(toxic_df)
-                strong_Vad_dfs.append(vader_df)
             elif artist_name in weak_indivs:
                 weak_Tox_dfs.append(toxic_df)
-                weak_Vad_dfs.append(vader_df)
 
     final_strong_Tdf = pd.concat(strong_Tox_dfs)
-    final_strong_Vdf = pd.concat(strong_Vad_dfs)
-    final_strong_df = final_strong_Tdf.merge(final_strong_Vdf).reset_index(drop=True)
+    final_strong_df = final_strong_Tdf.reset_index(drop=True)
 
     final_weak_Tdf = pd.concat(weak_Tox_dfs)
-    final_weak_Vdf = pd.concat(weak_Vad_dfs)
-    final_weak_df = final_weak_Tdf.merge(final_weak_Vdf).reset_index(drop=True)
+    final_weak_df = final_weak_Tdf.reset_index(drop=True)
 
     final_strong_df.to_csv(out_dir + "strong_ps.csv", index=False)
     final_weak_df.to_csv(out_dir + "weak_ps.csv", index=False)

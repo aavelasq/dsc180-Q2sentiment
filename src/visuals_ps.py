@@ -64,10 +64,10 @@ def ps_line_plot(out_dir, df, metric, canceled=False):
     '''
     generates line plot based on inputted df
     '''
-    plt.figure(figsize = (15,10))
+    plt.figure(figsize = (10,5))
     sns.lineplot(data=df, x="days_cancel", y=metric, hue="group")
-    plt.xlabel('# Days Before and After Cancellation')
-    plt.ylabel(str(metric))
+    plt.xlabel('# of Days Before and After Cancellation')
+    plt.ylabel("Metric Score")
     plt.axvline(0, 0.04, 0.99,color="red")
 
     if canceled == True:
