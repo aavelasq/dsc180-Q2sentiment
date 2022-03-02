@@ -54,7 +54,10 @@ def overall_avgs(toxic_df):
     before_toxic = toxic_df[toxic_df["days_cancel"] < 0].groupby(by="group").median()
     after_toxic = toxic_df[toxic_df["days_cancel"] > 0].groupby(by="group").median()
 
+    print("BEFORE CANCELLATION")
     print(before_toxic)
+    print()
+    print("AFTER CANCELLATION")
     print(after_toxic)
 
 def ps_line_plot(out_dir, df, metric, canceled=False):
@@ -86,6 +89,10 @@ def combine_dfs(strong_df, weak_df, canceled=False):
     return toxic_ps_df
 
 def create_visuals(arg1, arg2):
+    '''
+    creates line plots and dfs based on strong and weak parasocial relationship
+    groupings
+    '''
     strong_ps_df = pd.read_csv(arg1)
     weak_ps_df = pd.read_csv(arg2)
 
@@ -99,12 +106,12 @@ def create_visuals(arg1, arg2):
     plt.clf()
     ps_line_plot("./data/out/", canceled_ps_df, "insult", True)
 
-    # for control indivs
-    control_ps_df = combine_dfs(strong_ps_df, weak_ps_df, False)
-    control_ps_df.to_csv("./data/temp/control_toxic_ps.csv")
-    overall_avgs(control_ps_df)
+    # # for control indivs
+    # control_ps_df = combine_dfs(strong_ps_df, weak_ps_df, False)
+    # control_ps_df.to_csv("./data/temp/control_toxic_ps.csv")
+    # overall_avgs(control_ps_df)
 
-    plt.clf()
-    ps_line_plot("./data/out/", control_ps_df, "severe_toxicity", False)
-    plt.clf()
-    ps_line_plot("./data/out/", control_ps_df, "insult", False)
+    # plt.clf()
+    # ps_line_plot("./data/out/", control_ps_df, "severe_toxicity", False)
+    # plt.clf()
+    # ps_line_plot("./data/out/", control_ps_df, "insult", False)
