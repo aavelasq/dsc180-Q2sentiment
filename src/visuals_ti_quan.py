@@ -44,7 +44,7 @@ def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
     assualt_dfs = assualt_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     assualt_dfs["group"] = "assualt" # label group
     
-    final = pd.concat([misinfo_dfs, discrim_dfs, assualt_dfs])
+    final = pd.concat([misinfo_dfs, discrim_dfs, assualt_dfs]).reset_index(drop=True)
     return final
 
 def ps_line_plot(out_dir, df, metric):
