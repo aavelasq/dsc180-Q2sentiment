@@ -109,7 +109,7 @@ def create_visuals_qual(arg1, arg2, arg3):
     
     misinfo_dfs = pd.read_csv(arg1)
     discrim_dfs = pd.read_csv(arg2)
-    assualt_dfs = pd.read_csv(arg3)
+    assualt_dfs = pd.read_csv(arg2)
 
     misinfo_dfs, discrim_dfs, assualt_dfs = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d")
     
@@ -124,9 +124,18 @@ def create_visuals_qual(arg1, arg2, arg3):
     assualt_dfs = assualt_dfs[(assualt_dfs["days_cancel"] >= -183) | (assualt_dfs["days_cancel"] <= 183)]
     
     misinfo_before, misinfo_after = word_frequency(misinfo_dfs)
+    misinfo_before.to_csv("./data/temp/" + "misinfo_before.csv", index=False)
+    misinfo_after.to_csv("./data/temp/" + "misinfo_after.csv", index=False)
+
     discrim_before, discrim_after = word_frequency(discrim_dfs)
+    discrim_before.to_csv("./data/temp/" + "discrim_before.csv", index=False)
+    discrim_after.to_csv("./data/temp/" + "discrim_after.csv", index=False)
+
     assualt_before, assualt_after = word_frequency(assualt_dfs)
+    assualt_before.to_csv("./data/temp/" + "assualt_before.csv", index=False)
+    assualt_after.to_csv("./data/temp/" + "assualt_after.csv", index=False)
     
+
     plt.clf()
     plot_ti("./data/out/", misinfo_before, "Misinformation_Before")
     plt.clf()
@@ -137,7 +146,6 @@ def create_visuals_qual(arg1, arg2, arg3):
     plt.clf()
     plot_ti("./data/out/", discrim_after, "Discrimination_After")
 
-    
     plt.clf()
     plot_ti("./data/out/", assualt_before, "Assualt_Before")
     plt.clf()

@@ -44,7 +44,7 @@ def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
     assualt_dfs = assualt_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     assualt_dfs["group"] = "assualt" # label group
     
-    final = pd.concat([misinfo_dfs, discrim_dfs, assualt_dfs]).reset_index(drop=True)
+    final = pd.concat([misinfo_dfs, discrim_dfs, assualt_dfs])
     return final
 
 def ps_line_plot(out_dir, df, metric):
@@ -81,3 +81,6 @@ def create_visuals_quan(arg1, arg2, arg3):
     
     plt.clf()
     ps_line_plot("./data/out/", combined, "severe_toxicity")
+
+    plt.clf()
+    ps_line_plot("./data/out/", combined, "insult")
