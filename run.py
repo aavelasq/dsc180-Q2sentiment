@@ -1,6 +1,5 @@
 import sys
 import datetime
-import pandas as pd
 import json
 
 sys.path.insert(0, 'src') # add src to paths
@@ -14,9 +13,9 @@ from background import calculate_median
 from visuals_ti_qual import create_visuals_qual
 from visuals_ti_quan import create_visuals_quan
 import type_issue
-# from toxicity_script import toxicityFunc
-# from vader_script import polarityFunc
-# from polarity_script import calc_textblob_polarity
+from toxicity_script import toxicityFunc
+from vader_script import polarityFunc
+from polarity_script import calc_textblob_polarity
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL
 cancellation_date = datetime.datetime(2021, 9, 15)
