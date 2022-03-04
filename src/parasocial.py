@@ -73,7 +73,7 @@ def calc_engage_metric(df):
         by="indiv").mean().reset_index()['quote_count'])
     final_df["num_engage"] = engage_num
 
-    # calculates engagement ratio (total engagement/# of total tweets)
+    # calculates engagement ratio (total mean engagement)
     final_df["engage_ratio"] = final_df["num_engage"]
     final_df = final_df.sort_values(by="engage_ratio", ascending=False).reset_index(drop=True)
     
