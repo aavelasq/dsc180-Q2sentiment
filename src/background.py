@@ -185,7 +185,7 @@ def calculate_median(data_list, out_dir, temp_dir, metric):
         
         # combine data by gender or industry
         if k == "female" or k == "male":
-            cat_cancelled_median = combine_data(artist_dict, gender=k).rolling(5).median()
+            cat_cancelled_median = combine_data(artist_dict, gender=k)
         else:
             # retrieve male and female canceled artists
             f_name = v[0][0]
@@ -217,7 +217,7 @@ def calculate_median(data_list, out_dir, temp_dir, metric):
 
             cat_cancelled_median = combine_data(artist_dict, v[0], v[1])  
 
-        if k == "hiphop":
+        if k == "hiphop" or k == "female":
             cat_cancelled_median = cat_cancelled_median.rolling(5).median()
 
         # add indicator column
