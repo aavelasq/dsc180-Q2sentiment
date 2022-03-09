@@ -21,17 +21,6 @@ female_hiphop_list = ['NICKI', 'SAWEETIE']
 male_pop_list = ['ZAYN', 'HARRY']
 female_pop_list = ['DOJA', 'ADELE']
 
-def import_test_data(toxicity, polarity,vader):
-    '''
-    used for test target
-    '''
-    cancel_date = datetime.datetime(2022, 2, 6)
-    toxicity_df = pd.read_csv(toxicity)
-    # polarity_df = pd.read_csv(polarity)
-    vader_df = pd.read_csv(vader)
-
-    return [toxicity_df, vader_df, cancel_date]
-
 def data_helper_func(file_dir, input_list, output_dict, cancel_date):
     '''
     helper function for import_main_data
@@ -44,10 +33,10 @@ def data_helper_func(file_dir, input_list, output_dict, cancel_date):
         # polarity_file = file_dir + indiv + '_meanPolarity.csv'
         # polarity_df = pd.read_csv(polarity_file)
 
-        vader_file = file_dir + indiv + '_vaderPolarity.csv'
-        vader_df = pd.read_csv(vader_file)
-
-        output_dict[indiv] = [toxic_df, vader_df, cancel_date]
+        # vader_file = file_dir + indiv + '_vaderPolarity.csv'
+        # vader_df = pd.read_csv(vader_file)
+        
+        output_dict[indiv] = [toxic_df, cancel_date]
 
     return output_dict
 
@@ -65,7 +54,7 @@ def tweet_helper_func(base_dir, input_list, cancel_date):
 
     return output_dict
 
-def import_acc_data(base_dir):
+def import_acc_data(base_dir, test=False):
     '''
     imports data of tweets gathered from target individual's twitter acccounts
     ''' 
@@ -76,6 +65,15 @@ def import_acc_data(base_dir):
     female_hiphop_dict = {}
     male_pop_dict = {}
     female_pop_dict = {}
+
+    cancel_date = datetime.datetime(2022, 2, 6)
+    if test:
+       maleKpop_cancel_date = cancel_date
+       femaleKpop_cancel_date = cancel_date
+       maleHH_cancel_date = cancel_date
+       femaleHH_cancel_date = cancel_date
+       malePop_cancel_date = cancel_date
+       femalePop_cancel_date = cancel_date
 
     # kpop dicts 
     male_kpop_dict = tweet_helper_func(base_dir, male_kpop_list, maleKpop_cancel_date)
@@ -91,7 +89,7 @@ def import_acc_data(base_dir):
             male_hiphop_dict, female_hiphop_dict, 
             male_pop_dict, female_pop_dict]
 
-def import_main_data(test_dir, genre1_dir, genre2_dir, genre3_dir):
+def import_main_data(genre1_dir, genre2_dir, genre3_dir, test=False):
     '''
     main func used for data target
     '''
@@ -103,23 +101,45 @@ def import_main_data(test_dir, genre1_dir, genre2_dir, genre3_dir):
     male_pop_dict = {}
     female_pop_dict = {}
 
-    # kpop dicts 
-    male_kpop_dict = data_helper_func(genre1_dir, male_kpop_list, 
-        male_kpop_dict, maleKpop_cancel_date)
-    female_kpop_dict = data_helper_func(genre1_dir, female_kpop_list, 
-        female_kpop_dict, femaleKpop_cancel_date)
+    # test cancel date
+    cancel_date = datetime.datetime(2022, 2, 6)
+    if test:
+        # kpop dicts 
+        male_kpop_dict = data_helper_func(genre1_dir, male_kpop_list, 
+            male_kpop_dict, cancel_date)
+        female_kpop_dict = data_helper_func(genre1_dir, female_kpop_list, 
+            female_kpop_dict, cancel_date)
 
-    # hiphop dicts
-    male_hiphop_dict = data_helper_func(genre2_dir, male_hiphop_list, 
-        male_hiphop_dict, maleHH_cancel_date)
-    female_hiphop_dict = data_helper_func(genre2_dir, female_hiphop_list, 
-        female_hiphop_dict, femaleHH_cancel_date) 
-    
-    # pop dicts
-    male_pop_dict = data_helper_func(genre3_dir, male_pop_list, 
-        male_pop_dict, malePop_cancel_date)
-    female_pop_dict = data_helper_func(genre3_dir, female_pop_list, 
-        female_pop_dict, femalePop_cancel_date) 
+        # hiphop dicts
+        male_hiphop_dict = data_helper_func(genre2_dir, male_hiphop_list, 
+            male_hiphop_dict, cancel_date)
+        female_hiphop_dict = data_helper_func(genre2_dir, female_hiphop_list, 
+            female_hiphop_dict, cancel_date) 
+        
+        # pop dicts
+        male_pop_dict = data_helper_func(genre3_dir, male_pop_list, 
+            male_pop_dict, cancel_date)
+        female_pop_dict = data_helper_func(genre3_dir, female_pop_list, 
+            female_pop_dict, cancel_date) 
+
+    else:
+        # kpop dicts 
+        male_kpop_dict = data_helper_func(genre1_dir, male_kpop_list, 
+            male_kpop_dict, maleKpop_cancel_date)
+        female_kpop_dict = data_helper_func(genre1_dir, female_kpop_list, 
+            female_kpop_dict, femaleKpop_cancel_date)
+
+        # hiphop dicts
+        male_hiphop_dict = data_helper_func(genre2_dir, male_hiphop_list, 
+            male_hiphop_dict, maleHH_cancel_date)
+        female_hiphop_dict = data_helper_func(genre2_dir, female_hiphop_list, 
+            female_hiphop_dict, femaleHH_cancel_date) 
+        
+        # pop dicts
+        male_pop_dict = data_helper_func(genre3_dir, male_pop_list, 
+            male_pop_dict, malePop_cancel_date)
+        female_pop_dict = data_helper_func(genre3_dir, female_pop_list, 
+            female_pop_dict, femalePop_cancel_date) 
 
     return [male_kpop_dict, female_kpop_dict, 
             male_hiphop_dict, female_hiphop_dict, 

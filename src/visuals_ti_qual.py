@@ -35,33 +35,35 @@ def remove_url(txt):
 
     return " ".join(re.sub("([^0-9A-Za-z \t])|(\w+:\/\/\S+)", "", txt).split())
 
-def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
+def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days, test):
 
     misinfo_dfs = convert_dates(misinfo_dfs) # convert to datetime obj
     # group by # of days canceled
-    misinfo_dfs['days_cancel'] = misinfo_dfs.apply(count_days, axis=1)
+    misinfo_dfs['days_cancel'] = misinfo_dfs.apply(lambda x: count_days(x, test), axis=1)
     
     discrim_dfs = convert_dates(discrim_dfs) # convert to datetime obj
     # group by # of days canceled
-    discrim_dfs['days_cancel'] = discrim_dfs.apply(count_days, axis=1)
+    discrim_dfs['days_cancel'] = discrim_dfs.apply(lambda x: count_days(x, test), axis=1)
     
     assualt_dfs = convert_dates(assualt_dfs) # convert to datetime obj
     # group by # of days canceled
-    assualt_dfs['days_cancel'] = assualt_dfs.apply(count_days, axis=1)
+    assualt_dfs['days_cancel'] = assualt_dfs.apply(lambda x: count_days(x, test), axis=1)
 
     return misinfo_dfs, discrim_dfs, assualt_dfs
 
-def count_days(row):
+def count_days(row, test):
     '''
     helper function to count number of days since deplatform date
     '''
     cancel_date = cancel_dates[row["indiv"].lower()]
 
+    if test:
+        cancel_date = datetime.datetime(2022, 2, 6)
+
     return row["created_at"] - cancel_date
 
 def plot_ti(out_path, df, issue):
     fig, ax = plt.subplots(figsize=(8, 8))
-    
     # Plot horizontal bar graph
     df.sort_values(by='count').plot.barh(x='words',
                       y='count',
@@ -105,13 +107,13 @@ def word_frequency(df):
     
     return words_before, words_after
 
-def create_visuals_qual(arg1, arg2, arg3):
+def create_visuals_qual(arg1, arg2, arg3, temp_dir, out_dir, test=False):
     
     misinfo_dfs = pd.read_csv(arg1)
     discrim_dfs = pd.read_csv(arg2)
     assualt_dfs = pd.read_csv(arg2)
 
-    misinfo_dfs, discrim_dfs, assualt_dfs = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d")
+    misinfo_dfs, discrim_dfs, assualt_dfs = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d", test)
     
     # convert timedelta to int 
     misinfo_dfs["days_cancel"] = misinfo_dfs["days_cancel"].dt.days
@@ -124,29 +126,29 @@ def create_visuals_qual(arg1, arg2, arg3):
     assualt_dfs = assualt_dfs[(assualt_dfs["days_cancel"] >= -183) | (assualt_dfs["days_cancel"] <= 183)]
     
     misinfo_before, misinfo_after = word_frequency(misinfo_dfs)
-    misinfo_before.to_csv("./data/temp/" + "misinfo_before.csv", index=False)
-    misinfo_after.to_csv("./data/temp/" + "misinfo_after.csv", index=False)
+    misinfo_before.to_csv(temp_dir + "misinfo_before.csv", index=False)
+    misinfo_after.to_csv(temp_dir + "misinfo_after.csv", index=False)
 
     discrim_before, discrim_after = word_frequency(discrim_dfs)
-    discrim_before.to_csv("./data/temp/" + "discrim_before.csv", index=False)
-    discrim_after.to_csv("./data/temp/" + "discrim_after.csv", index=False)
+    discrim_before.to_csv(temp_dir + "discrim_before.csv", index=False)
+    discrim_after.to_csv(temp_dir + "discrim_after.csv", index=False)
 
     assualt_before, assualt_after = word_frequency(assualt_dfs)
-    assualt_before.to_csv("./data/temp/" + "assualt_before.csv", index=False)
-    assualt_after.to_csv("./data/temp/" + "assualt_after.csv", index=False)
+    assualt_before.to_csv(temp_dir + "assualt_before.csv", index=False)
+    assualt_after.to_csv(temp_dir + "assualt_after.csv", index=False)
     
 
     plt.clf()
-    plot_ti("./data/out/", misinfo_before, "Misinformation_Before")
+    plot_ti(out_dir, misinfo_before, "Misinformation_Before")
     plt.clf()
-    plot_ti("./data/out/", misinfo_after, "Misinformation_After")
+    plot_ti(out_dir, misinfo_after, "Misinformation_After")
     
     plt.clf()
-    plot_ti("./data/out/", discrim_before, "Discrimination_Before")
+    plot_ti(out_dir, discrim_before, "Discrimination_Before")
     plt.clf()
-    plot_ti("./data/out/", discrim_after, "Discrimination_After")
+    plot_ti(out_dir, discrim_after, "Discrimination_After")
 
     plt.clf()
-    plot_ti("./data/out/", assualt_before, "Assualt_Before")
+    plot_ti(out_dir, assualt_before, "Assualt_Before")
     plt.clf()
-    plot_ti("./data/out/", assualt_after, "Assualt_After")
+    plot_ti(out_dir, assualt_after, "Assualt_After")

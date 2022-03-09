@@ -1,0 +1,7 @@
+created_at,author_id,public_metrics,id,text
+2022-02-05T00:12:47.000Z,1,"{'retweet_count': 10000, 'reply_count': 10000, 'like_count': 10000, 'quote_count':10000}",1,something normal
+2022-02-06T00:12:47.000Z,2,"{'retweet_count': 10000, 'reply_count': 10000, 'like_count': 10000, 'quote_count':10000}",2,something controversial
+2022-02-07T00:12:47.000Z,2,"{'retweet_count': 10000, 'reply_count': 10000, 'like_count': 10000, 'quote_count':10000}",2,I apologize for blah
+2022-02-08T00:12:47.000Z,2,"{'retweet_count': 10000, 'reply_count': 10000, 'like_count': 10000, 'quote_count':10000}",2,I'm sorry for blah
+2022-02-09T00:12:47.000Z,2,"{'retweet_count': 10000, 'reply_count': 10000, 'like_count': 10000, 'quote_count':10000}",2,thanks for the support
+2022-02-11T00:12:47.000Z,3,"{'retweet_count': 10000, 'reply_count': 10000, 'like_count': 10000, 'quote_count':10000}",3,something normal

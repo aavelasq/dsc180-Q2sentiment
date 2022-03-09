@@ -72,7 +72,7 @@ def create_issue_df(out_dir, tweet_list, data_list):
             artist_name = indiv.lower()
 
             toxicity_data = data_dict[indiv][0]
-            cancel_date = data_dict[indiv][2]
+            cancel_date = data_dict[indiv][1]
             
             toxic_df = clean_toxic_df(toxicity_data) # remove invalid values
             toxic_df = convert_dates(toxic_df) # convert to datetime obj

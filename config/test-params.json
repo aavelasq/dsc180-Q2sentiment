@@ -1,5 +1,6 @@
 {
-    "toxicity": "./data/test_data.csv",
-    "polarity": "./data/test_meanPolarity.csv",
-    "vader": "./data/test_vaderPolarity.csv"
+    "genre1_dir": "./data/test/test_kpop_data/",
+    "genre2_dir": "./data/test/test_hiphop_data/",
+    "genre3_dir": "./data/test/test_pop_data/",
+    "test": "True"
 }

@@ -12,19 +12,21 @@ cancel_dates = {"lucas": datetime.datetime(2021,8,24), "giselle": datetime.datet
                 "zayn": datetime.datetime(2021,10,28), "doja": datetime.datetime(2020,5,25), 
                 "harry": datetime.datetime(2021,10,28), "adele": datetime.datetime(2020,5,25)}
 
-def count_days(row):
+def count_days(row, test):
     '''
     helper function to count number of days since deplatform date
     '''
     cancel_date = cancel_dates[row["indiv"].lower()]
+    if test:
+        cancel_date = datetime.datetime(2022, 2, 6)
 
     return row["created_at"] - cancel_date
 
-def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
+def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days, test):
 
     misinfo_dfs = convert_dates(misinfo_dfs) # convert to datetime obj
     # group by # of days canceled
-    misinfo_dfs['days_cancel'] = misinfo_dfs.apply(count_days, axis=1)
+    misinfo_dfs['days_cancel'] = misinfo_dfs.apply(lambda x: count_days(x, test), axis=1)
     # calculate rolling avg then calculate median
     misinfo_dfs = misinfo_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     misinfo_dfs["group"] = "misinfo" # label group
@@ -32,14 +34,14 @@ def preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, roll_days):
     
     discrim_dfs = convert_dates(discrim_dfs) # convert to datetime obj
     # group by # of days canceled
-    discrim_dfs['days_cancel'] = discrim_dfs.apply(count_days, axis=1)
+    discrim_dfs['days_cancel'] = discrim_dfs.apply(lambda x: count_days(x, test), axis=1)
     # calculate rolling avg then calculate median
     discrim_dfs = discrim_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     discrim_dfs["group"] = "discrim" # label group
     
     assualt_dfs = convert_dates(assualt_dfs) # convert to datetime obj
     # group by # of days canceled
-    assualt_dfs['days_cancel'] = assualt_dfs.apply(count_days, axis=1)
+    assualt_dfs['days_cancel'] = assualt_dfs.apply(lambda x: count_days(x, test), axis=1)
     # calculate rolling avg then calculate median
     assualt_dfs = assualt_dfs.groupby(by=["days_cancel"]).mean().rolling(roll_days).median().reset_index()
     assualt_dfs["group"] = "assualt" # label group
@@ -62,25 +64,26 @@ def ps_line_plot(out_dir, df, metric):
     out_path = os.path.join(out_dir, file_name)
     plt.savefig(out_path, bbox_inches='tight')
 
-def create_visuals_quan(arg1, arg2, arg3):
+def create_visuals_quan(arg1, arg2, arg3, temp_dir, out_dir, test=False):
     
     misinfo_dfs = pd.read_csv(arg1)
     discrim_dfs = pd.read_csv(arg2)
     assualt_dfs = pd.read_csv(arg3)
 
 
-    combined = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d")
+    combined = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d", test)
     
     # convert timedelta to int 
     combined["days_cancel"] = combined["days_cancel"].dt.days
     
     # makes sure time period is 6 months before and after cancellation date
     combined = combined[(combined["days_cancel"] >= -183) | (combined["days_cancel"] <= 183)]
-
-    combined.to_csv("./data/temp/" + "final_ti.csv", index=False)
     
-    plt.clf()
-    ps_line_plot("./data/out/", combined, "severe_toxicity")
+    combined.to_csv(temp_dir + "final_ti.csv", index=False)
+    combined = combined.reset_index(drop=True)
 
     plt.clf()
-    ps_line_plot("./data/out/", combined, "insult")
+    ps_line_plot(out_dir, combined, "severe_toxicity")
+
+    plt.clf()
+    ps_line_plot(out_dir, combined, "insult")

@@ -39,7 +39,6 @@ def main(targets):
         # data_list consists of dataframes for each gender per genre
         for data_dict in data_list:
             calculate_stats(data_dict)
-        # calculate_stats(data)
 
     if 'preprocessing' in targets:
         with open('config/preprocessing-params.json') as fh:
@@ -105,15 +104,42 @@ def main(targets):
     #     polarityFunc(data, "name", cancellation_date)
 
     if 'test' in targets:
+        test_outdir = "./data/test/test_out/"
+        test_tempdir = "./data/test/test_temp/"
         with open('config/test-params.json') as fh:
             data_cfg = json.load(fh)
 
-        data_list = etl.import_test_data(**data_cfg)
+        test_data_list = etl.import_main_data(**data_cfg)
 
-        test_data_dict = {"test": data_list}
+        test_tweet_list = etl.import_acc_data("./data/test/test_tweet_list/", test=True)
 
-        # rq 1 function 
-        calculate_stats(test_data_dict, test=True)
+        # eda
+        for data_dict in test_data_list:
+            calculate_stats(data_dict, test=True)
+        # preprocessing
+        for data_dict in test_data_list:
+            calculate_avgs(data_dict, test_outdir, test_tempdir)
+        
+        # parasocial
+        parasocial.create_parasocial_dfs(test_tempdir, test_tweet_list, test_data_list)
+
+        # visuals
+        strong = test_tempdir + "strong_ps.csv"
+        weak = test_tempdir + "weak_ps.csv"
+        create_visuals(strong, weak)
+
+        # typeOfIssue
+        type_issue.create_issue_df(test_tempdir, test_tweet_list, test_data_list)
+
+        # TI visuals
+        misinfo = test_tempdir + "misinfo_ti.csv"
+        discrim = test_tempdir + "discrim_ti.csv"
+        assault = test_tempdir + "assualt_ti.csv"
+        create_visuals_qual(misinfo, discrim, assault, test_tempdir, test_outdir, test=True)
+        create_visuals_quan(misinfo, discrim, assault, test_tempdir, test_outdir, test=True)
+
+        # background
+        calculate_median(test_data_list, test_outdir, test_tempdir, "severe_toxicity", test=True)
 
 if __name__ == '__main__':
     targets = sys.argv[1:]

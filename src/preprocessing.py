@@ -67,11 +67,11 @@ def calculate_avgs(data_dict, out_dir, temp_dir):
 
     for indiv in artist_names:
         toxicity_data = data_dict[indiv][0]
-        vader_data = data_dict[indiv][1]
+        # vader_data = data_dict[indiv][1]
         # cancel_date = data_dict[indiv][2]
 
         toxicity_df = convert_dates(toxicity_data)
-        vader_df = convert_dates(vader_data)
+        # vader_df = convert_dates(vader_data)
 
         # computes rolling average on toxicity df
         toxic_roll_df = compute_rolling_avg(toxicity_df)
@@ -85,8 +85,8 @@ def calculate_avgs(data_dict, out_dir, temp_dir):
         toxic_roll_df.reset_index().to_csv(temp_path)
 
         # computes rolling average on vader df
-        vader_roll_df = compute_rolling_avg(vader_df)
+        # vader_roll_df = compute_rolling_avg(vader_df)
 
         # saves to temp data folder 
         temp_path = temp_dir + indiv + "_vaderRollAvg.csv"
-        vader_roll_df.reset_index().to_csv(temp_path)
+        # vader_roll_df.reset_index().to_csv(temp_path)

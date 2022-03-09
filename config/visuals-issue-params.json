@@ -1,5 +1,7 @@
 {
     "arg1": "./data/temp/misinfo_ti.csv",
     "arg2": "./data/temp/discrim_ti.csv",
-    "arg3": "./data/temp/assualt_ti.csv"
+    "arg3": "./data/temp/assualt_ti.csv",
+    "temp_dir": "./data/temp/",
+    "out_dir": "./data/out/"
 }

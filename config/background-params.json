@@ -1,5 +1,5 @@
 {
     "out_dir": "./data/out/",
     "temp_dir": "./data/temp/",
-    "metric": "severe_toxicity"
+    "metric": "insult"
 }

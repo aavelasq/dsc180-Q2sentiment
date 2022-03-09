@@ -34,10 +34,10 @@ def create_medianLinePlot(out_dir, df, category, metric, hue):
     category for cancelled and control groups
     '''
     if category == "genre":
-        c_name = "Canceled K-Pop vs. Hip-hop vs Pop Artists "
+        c_name = "Genre"
         med = "Median "
     elif category == "sex":
-        c_name = "Canceled Female vs. Male Artists "
+        c_name = "Sex"
         med = "Median " 
     elif category == "all":
         c_name = "All Canceled Artists "
@@ -51,15 +51,15 @@ def create_medianLinePlot(out_dir, df, category, metric, hue):
     plt.figure(figsize = (10,5))
     sns.lineplot(data=df, x="Days Before & After Controversy", y=metric, hue=hue)
     plt.axvline(0, 0.01, 0.99,color="red")
-    plt.xlabel('# Days Before and After Cancellation')
+    plt.xlabel('Days Since Cancellation')
     plt.ylabel(med + y_label + " Levels")
-    plt.title(c_name + "Group " + med + y_label + " Levels")
+    plt.title(med + y_label + " Levels By " + c_name)
     file_name = category + "_median_" + metric + "Plot.png"
     out_path = os.path.join(out_dir, file_name)
     plt.savefig(out_path, bbox_inches='tight')
 
 
-def transform_data(data_list, metric):
+def transform_data(data_list, metric, test):
     '''
     transform data to get rolling average
     '''
@@ -93,6 +93,9 @@ def transform_data(data_list, metric):
             cancel_date = malePop_cancel_date
         elif indiv in female_pop_list:
             cancel_date = femalePop_cancel_date
+
+        if test:
+            cancel_date = datetime.datetime(2022, 2, 6)
         
         roll_df["Days Before & After Controversy"] = (roll_df["created_at"] - cancel_date).dt.days
         artist_dict[indiv] = roll_df[["Days Before & After Controversy", metric]]
@@ -133,7 +136,6 @@ def days_after(df, metric):
             m_df = df[df["group"] == "male"]
             f_df = df[df["group"] == "female"]
             g_list = [m_df, f_df]
-           
 
         elif "pop" in df["group"].values:
             k_df = df[df["group"] == "kpop"]
@@ -169,9 +171,9 @@ def days_after(df, metric):
     return first_occurence
     
 
-def calculate_median(data_list, out_dir, temp_dir, metric):
+def calculate_median(data_list, out_dir, temp_dir, metric, test=False):
     #clean/transform all artist data & add to dict
-    artist_dict = transform_data(data_list,metric)
+    artist_dict = transform_data(data_list,metric,test)
     all_artist = {"kpop":[female_kpop_list, male_kpop_list], "hiphop":[female_hiphop_list, male_hiphop_list], "pop":[female_pop_list, male_pop_list],
                     "female":None, "male":None}
     # make empty dfs
@@ -216,9 +218,9 @@ def calculate_median(data_list, out_dir, temp_dir, metric):
                 can_all_art_ret = pd.concat([can_all_art_ret, comb_can_ret], axis=1)
 
             cat_cancelled_median = combine_data(artist_dict, v[0], v[1])  
-
-        if k == "hiphop" or k == "female":
-            cat_cancelled_median = cat_cancelled_median.rolling(5).median()
+        if test == False:
+            if k == "hiphop" or k == "female":
+                cat_cancelled_median = cat_cancelled_median.rolling(5).median()
 
         # add indicator column
         cat_cancelled_median["group"] = k
