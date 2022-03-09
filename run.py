@@ -112,6 +112,10 @@ def main(targets):
         test_data_list = etl.import_main_data(**data_cfg)
 
         test_tweet_list = etl.import_acc_data("./data/test/test_tweet_list/", test=True)
+
+        # preprocessing
+        for data_dict in test_data_list:
+            calculate_avgs(data_dict, out_dir, temp_dir)
         
         # parasocial
         parasocial.create_parasocial_dfs(temp_dir, test_tweet_list, test_data_list)
