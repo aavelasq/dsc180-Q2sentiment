@@ -98,13 +98,18 @@ def create_visuals(arg1, arg2):
 
     # for canceled indivs
     canceled_ps_df = combine_dfs(strong_ps_df, weak_ps_df, True)
-    canceled_ps_df.to_csv("./data/temp/cancel_toxic_ps.csv")
+    canceled_ps_df.to_csv("./data/temp/rq3_ps/cancel_toxic_ps.csv")
     overall_avgs(canceled_ps_df)
-
+    
+    # create/check folder exists
+    out_dir = "./data/out/"
+    out_dir =os.path.join(out_dir,"rq3_ps/")
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
     plt.clf()
-    ps_line_plot("./data/out/", canceled_ps_df, "severe_toxicity", True)
+    ps_line_plot(out_dir, canceled_ps_df, "severe_toxicity", True)
     plt.clf()
-    ps_line_plot("./data/out/", canceled_ps_df, "insult", True)
+    ps_line_plot(out_dir, canceled_ps_df, "insult", True)
 
     # # for control indivs
     # control_ps_df = combine_dfs(strong_ps_df, weak_ps_df, False)

@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import ast
 from eda import convert_dates
 from preprocessing import clean_toxic_df
@@ -190,6 +191,11 @@ def create_parasocial_dfs(out_dir, tweet_list, data_list):
 
     final_weak_Tdf = pd.concat(weak_Tox_dfs)
     final_weak_df = final_weak_Tdf.reset_index(drop=True)
+
+    # create/check folder exists
+    out_dir =os.path.join(out_dir,"rq3_ps/")
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
 
     final_strong_df.to_csv(out_dir + "strong_ps.csv", index=False)
     final_weak_df.to_csv(out_dir + "weak_ps.csv", index=False)

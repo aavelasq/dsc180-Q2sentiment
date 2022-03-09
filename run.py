@@ -1,4 +1,5 @@
 import sys
+import os
 import datetime
 import json
 import pandas as pd
@@ -48,27 +49,6 @@ def main(targets):
         for data_dict in data_list:
             calculate_avgs(data_dict, **preproc_cfg)
 
-    # parasocial rq
-
-    if "parasocial" in targets:
-        parasocial.create_parasocial_dfs("./data/temp/", tweet_list, data_list)
-        
-    if "visuals" in targets:
-        with open('config/visuals-params.json') as fh:
-            visual_cfg = json.load(fh)
-
-        create_visuals(**visual_cfg)
-
-    # background rq
-      
-    if 'background' in targets:
-        # change metric in params:
-        # severe_toxicity, insult, Compound, Negative
-        with open('config/background-params.json') as fh:
-            background_cfg = json.load(fh)
-
-        calculate_median(data_list, **background_cfg)
-
     # type of issue rq
 
     if "typeOFIssue" in targets:
@@ -80,6 +60,29 @@ def main(targets):
 
         create_visuals_qual(**visual_cfg)
         create_visuals_quan(**visual_cfg)
+
+    # background rq
+      
+    if 'background' in targets:
+        # change metric in params:
+        # severe_toxicity, insult, Compound, Negative
+        with open('config/background-params.json') as fh:
+            background_cfg = json.load(fh)
+
+        calculate_median(data_list, **background_cfg)
+
+    
+
+    # parasocial rq
+
+    if "parasocial" in targets:
+        parasocial.create_parasocial_dfs("./data/temp/", tweet_list, data_list)
+        
+    if "visuals" in targets:
+        with open('config/visuals-params.json') as fh:
+            visual_cfg = json.load(fh)
+
+        create_visuals(**visual_cfg)
 
     
 
@@ -119,26 +122,29 @@ def main(targets):
         for data_dict in test_data_list:
             calculate_avgs(data_dict, out_dir, temp_dir)
         
-        # parasocial
-        parasocial.create_parasocial_dfs(temp_dir, test_tweet_list, test_data_list)
-
-        # visuals
-        strong = temp_dir + "strong_ps.csv"
-        weak = temp_dir + "weak_ps.csv"
-        create_visuals(strong, weak)
-
-        # background
-        calculate_median(test_data_list, out_dir, temp_dir, "severe_toxicity", test=True)
-
         # typeOfIssue
         type_issue.create_issue_df(temp_dir, test_tweet_list, test_data_list)
 
         # TI visuals
-        misinfo = temp_dir + "misinfo_ti.csv"
-        discrim = temp_dir + "discrim_ti.csv"
-        assault = temp_dir + "assualt_ti.csv"
+        type_temp = os.path.join(temp_dir,"rq1_type/")
+        misinfo = type_temp + "misinfo_ti.csv"
+        discrim = type_temp + "discrim_ti.csv"
+        assault = type_temp + "assualt_ti.csv"
         create_visuals_qual(misinfo, discrim, assault, temp_dir, out_dir, test=True)
         create_visuals_quan(misinfo, discrim, assault, temp_dir, out_dir, test=True)
+
+        # background
+        calculate_median(test_data_list, out_dir, temp_dir, "severe_toxicity", test=True)
+
+        # parasocial
+        parasocial.create_parasocial_dfs(temp_dir, test_tweet_list, test_data_list)
+
+        # visuals
+        ps_temp = os.path.join(temp_dir,"rq3_ps/")
+        strong = ps_temp + "strong_ps.csv"
+        weak = ps_temp + "weak_ps.csv"
+        create_visuals(strong, weak)
+        
 
 if __name__ == '__main__':
     targets = sys.argv[1:]

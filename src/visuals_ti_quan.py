@@ -79,8 +79,14 @@ def create_visuals_quan(arg1, arg2, arg3, temp_dir, out_dir, test=False):
     # makes sure time period is 6 months before and after cancellation date
     combined = combined[(combined["days_cancel"] >= -183) | (combined["days_cancel"] <= 183)]
     
+    temp_dir =os.path.join(temp_dir,"rq1_type/")
     combined.to_csv(temp_dir + "final_ti.csv", index=False)
     combined = combined.reset_index(drop=True)
+
+    # create/check folder exists
+    out_dir =os.path.join(out_dir,"rq1_type/")
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
 
     plt.clf()
     ps_line_plot(out_dir, combined, "severe_toxicity")

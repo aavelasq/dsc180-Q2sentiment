@@ -125,6 +125,7 @@ def create_visuals_qual(arg1, arg2, arg3, temp_dir, out_dir, test=False):
     discrim_dfs = discrim_dfs[(discrim_dfs["days_cancel"] >= -183) | (discrim_dfs["days_cancel"] <= 183)]
     assualt_dfs = assualt_dfs[(assualt_dfs["days_cancel"] >= -183) | (assualt_dfs["days_cancel"] <= 183)]
     
+    temp_dir =os.path.join(temp_dir,"rq1_type/")
     misinfo_before, misinfo_after = word_frequency(misinfo_dfs)
     misinfo_before.to_csv(temp_dir + "misinfo_before.csv", index=False)
     misinfo_after.to_csv(temp_dir + "misinfo_after.csv", index=False)
@@ -136,7 +137,11 @@ def create_visuals_qual(arg1, arg2, arg3, temp_dir, out_dir, test=False):
     assualt_before, assualt_after = word_frequency(assualt_dfs)
     assualt_before.to_csv(temp_dir + "assualt_before.csv", index=False)
     assualt_after.to_csv(temp_dir + "assualt_after.csv", index=False)
-    
+
+    # create/check folder exists   
+    out_dir =os.path.join(out_dir,"rq1_type/")
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
 
     plt.clf()
     plot_ti(out_dir, misinfo_before, "Misinformation_Before")

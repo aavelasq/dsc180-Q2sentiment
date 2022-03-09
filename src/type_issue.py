@@ -88,6 +88,11 @@ def create_issue_df(out_dir, tweet_list, data_list):
                 assualt_dfs.append(toxic_df)
             elif artist_name in misinformation:
                 misinfo_dfs.append(toxic_df)
+                
+    # create/check folder exists
+    out_dir =os.path.join(out_dir,"rq1_type/")
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
 
     final_misinfo = pd.concat(misinfo_dfs)
     final_misinfo.to_csv(out_dir + "misinfo_ti.csv", index=False)

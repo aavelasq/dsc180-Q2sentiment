@@ -237,6 +237,14 @@ def calculate_median(data_list, out_dir, temp_dir, metric, test=False):
             else:
                 khp_df = pd.concat([khp_df, cat_cancelled_median], ignore_index=True)
 
+    # create/check folders exist
+    out_dir = os.path.join(out_dir,"rq2_bg/")
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
+    temp_dir = os.path.join(temp_dir,"rq2_bg/")
+    if not os.path.isdir(temp_dir):
+        os.mkdir(temp_dir)
+
     # plotting line plots for groups and artists
     create_medianLinePlot(out_dir, all_can_df, "all" , metric, "artist")
     create_medianLinePlot(out_dir, fm_df, "sex" , metric, "group")

@@ -1,4 +1,4 @@
 {
-    "arg1": "./data/temp/strong_ps.csv",
-    "arg2": "./data/temp/weak_ps.csv"
+    "arg1": "./data/temp/rq3_ps/strong_ps.csv",
+    "arg2": "./data/temp/rq3_ps/weak_ps.csv"
 }
