@@ -59,6 +59,16 @@ def main(targets):
 
         create_visuals(**visual_cfg)
 
+    # background rq
+      
+    if 'background' in targets:
+        # change metric in params:
+        # severe_toxicity, insult, Compound, Negative
+        with open('config/background-params.json') as fh:
+            background_cfg = json.load(fh)
+
+        calculate_median(data_list, **background_cfg)
+
     # type of issue rq
 
     if "typeOFIssue" in targets:
@@ -71,15 +81,7 @@ def main(targets):
         create_visuals_qual(**visual_cfg)
         create_visuals_quan(**visual_cfg)
 
-    # background rq
-      
-    if 'background' in targets:
-        # change metric in params:
-        # severe_toxicity, insult, Compound, Negative
-        with open('config/background-params.json') as fh:
-            background_cfg = json.load(fh)
-
-        calculate_median(data_list, **background_cfg)
+    
 
     if 'toxicity' in targets:
         '''
@@ -104,8 +106,8 @@ def main(targets):
         polarityFunc(data, "name", cancellation_date)
 
     if 'test' in targets:
-        out_dir = "./data/out"
-        temp_dir = "./data/temp"
+        out_dir = "./data/out/"
+        temp_dir = "./data/temp/"
         with open('config/test-params.json') as fh:
             data_cfg = json.load(fh)
 
@@ -125,6 +127,9 @@ def main(targets):
         weak = temp_dir + "weak_ps.csv"
         create_visuals(strong, weak)
 
+        # background
+        calculate_median(test_data_list, out_dir, temp_dir, "severe_toxicity", test=True)
+
         # typeOfIssue
         type_issue.create_issue_df(temp_dir, test_tweet_list, test_data_list)
 
@@ -134,9 +139,6 @@ def main(targets):
         assault = temp_dir + "assualt_ti.csv"
         create_visuals_qual(misinfo, discrim, assault, temp_dir, out_dir, test=True)
         create_visuals_quan(misinfo, discrim, assault, temp_dir, out_dir, test=True)
-
-        # background
-        calculate_median(test_data_list, out_dir, temp_dir, "severe_toxicity", test=True)
 
 if __name__ == '__main__':
     targets = sys.argv[1:]

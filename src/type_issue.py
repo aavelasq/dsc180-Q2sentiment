@@ -8,7 +8,7 @@ import collections
 import nltk
 from nltk.corpus import stopwords
 import re
-import networkx
+# import networkx
 
 import datetime
 

@@ -1,8 +1,9 @@
-pandas==1.1.3
-numpy==1.19.2
+pandas==1.2.3
+numpy==1.19.5
 requests
-ast
 textblob
 vader
-googleapiclient
+google-api-python-client
+google-auth-httplib2 
+google-auth-oauthlib
 nltk

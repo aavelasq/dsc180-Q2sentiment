@@ -10,7 +10,10 @@ and after getting cancelled. To measure sentiment, we utilized three APIs:
 and [Textblob](https://textblob.readthedocs.io/en/dev/api_reference.html).
 
 
+
 ## Running the Project
+- Install dependencies using `pip install -r requirements.txt`
+
 - To run the project using test data: run `python run.py test`
 
 - To scrape Twitter data: run `python getTweets.py`
@@ -48,18 +51,17 @@ and [Textblob](https://textblob.readthedocs.io/en/dev/api_reference.html).
     - Saves rolling average dataframe to `data\temp`
 
 - To generate results for first sub-question: 
-    - run `python run.py data parasocial`
-        - Saves dataframe with parasocial data to `data\out`
-    - run `python run.py visuals`
-        - Saves parasocial visualizations to `data\out`
+    - run `python run.py data typefOfIssue`
+        - Saves dataframe with type of issue data to `data\out`
+    - run `python run.py visuals_ti`
+        - Saves type of issue visualizations to `data\out`
 
 - To generate results for second sub-question: run `python run.py data background`
     - Saves background dataframe to `data\temp`
     - Saves background visualizations to `data\out`
 
 - To generate results for third sub-question: 
-    - run `python run.py data typefOfIssue`
-        - Saves dataframe with type of issue data to `data\out`
-    - run `python run.py visuals_ti`
-        - Saves type of issue visualizations to `data\out`
-
+    - run `python run.py data parasocial`
+        - Saves dataframe with parasocial data to `data\out`
+    - run `python run.py visuals`
+        - Saves parasocial visualizations to `data\out`
