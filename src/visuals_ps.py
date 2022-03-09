@@ -54,11 +54,8 @@ def overall_avgs(toxic_df):
     before_toxic = toxic_df[toxic_df["days_cancel"] < 0].groupby(by="group").median()
     after_toxic = toxic_df[toxic_df["days_cancel"] > 0].groupby(by="group").median()
 
-    print("BEFORE CANCELLATION")
-    print(before_toxic)
-    print()
-    print("AFTER CANCELLATION")
-    print(after_toxic)
+    before_toxic.to_csv("./data/temp/rq3_ps/before_AvgToxic.csv")
+    after_toxic.to_csv("./data/temp/rq3_ps/after_AvgToxic.csv")
 
 def ps_line_plot(out_dir, df, metric, canceled=False):
     '''
