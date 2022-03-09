@@ -1,6 +1,0 @@
-text,created_at,id,toxicity,severe_toxicity,insult,profanity,Days Before & After Controversy,Compound,Negative,Neutral,Positive
-this is some test text this doesn't really mean anything,2022-02-05,1,0.0,0.0,0.0,0.0,-1,0.0,0.0,1.0,0.0
-THIS IS VERY TOXIC,2022-02-06,2,1.0,1.0,1.0,1.0,0,0.0,0.0,1.0,0.0
-insert some profanity here,2022-02-07,2,0.8,0.5,0.7,0.95,1,0.0,0.0,1.0,0.0
-THIS IS REALLY BAD DO NOT SUPPORT THIS INDIVIDUAL,2022-02-08,2,0.5,0.5,0.5,0.5,2,-0.7228,0.464,0.536,0.0
-they really suck and do not deserve to have a career,2022-02-09,2,0.53,0.23,0.76,0.34,3,-0.4927,0.242,0.758,0.0

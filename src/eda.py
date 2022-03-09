@@ -210,15 +210,6 @@ def calcToxicityOverTime(df, cancel_date, indiv, base_outdir):
     inital_df = df[df['insult'] != 1000]
     inital_df = df[df['profanity'] != 1000]
 
-    # creates and saves box plots 
-    # createToxicityBoxPlots(inital_df, 'toxicity', indiv)
-    # plt.clf()
-    # createToxicityBoxPlots(inital_df, 'severe_toxicity', indiv)
-    # plt.clf()
-    # createToxicityBoxPlots(inital_df, 'insult', indiv)
-    # plt.clf()
-    # createToxicityBoxPlots(inital_df, 'profanity', indiv)
-
     line_df = inital_df.copy()
     line_df['created_at'] = line_df['created_at'].apply(
             lambda x: count_days(x, cancel_date)).dt.days

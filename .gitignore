@@ -10,6 +10,5 @@ __pycache__
 !/data/temp/.gitkeep
 /notebooks/.ipynb_checkpoints
 /.ipynb_checkpoints
-/data/test_toxicity.csv
 /notebooks/*
 !/notebooks/.gitkeep

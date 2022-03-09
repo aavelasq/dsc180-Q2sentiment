@@ -1,6 +1,7 @@
 import sys
 import datetime
 import json
+import pandas as pd
 
 sys.path.insert(0, 'src') # add src to paths
 
@@ -33,7 +34,7 @@ def main(targets):
         tweet_list = etl.import_acc_data("./data/raw/")
 
         # for running API scripts
-        # data = pd.read_csv(".//data/raw/Saweetie_tweets.csv")
+        data = pd.read_csv("./data/test/test_toxicity.csv")
 
     if 'eda' in targets:
         # data_list consists of dataframes for each gender per genre
@@ -80,28 +81,27 @@ def main(targets):
 
         calculate_median(data_list, **background_cfg)
 
+    if 'toxicity' in targets:
+        '''
+        calculates toxicity sentiment using Google Perspective API
+        needs Google API keys to run
+        '''
+        # 2nd parameter: name of cancelled individual
+        toxicityFunc(data, "name")
 
-    # UNCOMMENT IF RUNNING DATA ON API SCRIPTS
-    # if 'toxicity' in targets:
-    #     '''
-    #     calculates toxicity sentiment using Google Perspective API
-    #     '''
-    #     # 2nd parameter: name of cancelled individual
-    #     toxicityFunc(data, "name")
+    if 'polarity' in targets:
+        '''
+        calculates polarity sentiment using TextBlob library
+        '''
+        # 2nd parameter: name of cancelled individual
+        calc_textblob_polarity(data, "name", cancellation_date)
 
-    # if 'polarity' in targets:
-    #     '''
-    #     calculates polarity sentiment using TextBlob library
-    #     '''
-    #     # 2nd parameter: name of cancelled individual
-    #     calc_textblob_polarity(data, "name", cancellation_date)
-
-    # if 'vader' in targets:
-    #     '''
-    #     calculates compound polarity using Vader library 
-    #     '''
-    #     # 2nd parameter: name of cancelled individual
-    #     polarityFunc(data, "name", cancellation_date)
+    if 'vader' in targets:
+        '''
+        calculates compound polarity using Vader library 
+        '''
+        # 2nd parameter: name of cancelled individual
+        polarityFunc(data, "name", cancellation_date)
 
     if 'test' in targets:
         test_outdir = "./data/test/test_out/"
