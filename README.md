@@ -39,9 +39,10 @@ To measure sentiment, we utilized the
 
 - To calculate some exploratory statistics and visualizations: run
     `python run.py data eda`
-    - Saves a dataframe containing the number of tweets collected per day 
-    to `data\out`
-    - Saves visualizations of user activity, toxicity, and polarity over time to `data\out`
+    - Runs on each individual artist, both canceled and control
+        - Saves a dataframe containing the number of tweets collected per day 
+        to `data\out`
+        - Saves visualizations of user activity, toxicity, and polarity over time to `data\out`
 
 - To smooth out short-term trends and compute rolling average of sentiment data:
     run `python run.py data preprocessing`
@@ -49,16 +50,16 @@ To measure sentiment, we utilized the
 
 - To generate results for first sub-question (type of issue): 
     - run `python run.py data typefOfIssue`
-        - Saves dataframes to `data\temp\rq1_type`
+        - Saves dataframes used later to generate visuals to `data\temp\rq1_type`
     - run `python run.py visuals_ti`
         - Saves visualizations to `data\out\rq1_type`
 
 - To generate results for second sub-question (background of artist): run `python run.py data background`
-    - Saves dataframes to `data\temp\rq_bg2`
+    - Saves dataframes used later to generate visuals to `data\temp\rq_bg2`
     - Saves visualizations to `data\out\rq_bg2`
 
 - To generate results for third sub-question (parasocial relationships): 
     - run `python run.py data parasocial`
-        - Saves dataframes to `data\temp\rq3_ps`
-    - run `python run.py visuals`
+        - Saves dataframes used later to generate visuals to `data\temp\rq3_ps`
+    - run `python run.py ps_visuals`
         - Saves visualizations to `data\out\rq3_ps`

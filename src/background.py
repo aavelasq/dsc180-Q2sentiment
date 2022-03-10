@@ -1,12 +1,10 @@
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt 
 import os
 import datetime
 from polarity_script import convert_dates
 from preprocessing import compute_rolling_avg
-
 
 # CHANGE DATE DEPENDING ON INDIVIDUAL 
 maleKpop_cancel_date = datetime.datetime(2021, 8, 24) # LUCAS

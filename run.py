@@ -9,12 +9,14 @@ sys.path.insert(0, 'src') # add src to paths
 import etl
 from eda import calculate_stats
 from preprocessing import calculate_avgs
+
 import parasocial
 from visuals_ps import create_visuals
 from background import calculate_median
 from visuals_ti_qual import create_visuals_qual
 from visuals_ti_quan import create_visuals_quan
 import type_issue
+
 from toxicity_script import toxicityFunc
 from vader_script import polarityFunc
 from polarity_script import calc_textblob_polarity
@@ -49,7 +51,7 @@ def main(targets):
         for data_dict in data_list:
             calculate_avgs(data_dict, **preproc_cfg)
 
-    # type of issue rq
+    # rq1 - type of issue 
 
     if "typeOFIssue" in targets:
         type_issue.create_issue_df("./data/temp/", tweet_list, data_list)
@@ -61,7 +63,7 @@ def main(targets):
         create_visuals_qual(**visual_cfg)
         create_visuals_quan(**visual_cfg)
 
-    # background rq
+    # rq2 - background of artist
       
     if 'background' in targets:
         # change metric in params:
@@ -71,20 +73,18 @@ def main(targets):
 
         calculate_median(data_list, **background_cfg)
 
-    
-
-    # parasocial rq
+    # rq3 - parasocial
 
     if "parasocial" in targets:
         parasocial.create_parasocial_dfs("./data/temp/", tweet_list, data_list)
         
-    if "visuals" in targets:
+    if "ps_visuals" in targets:
         with open('config/visuals-params.json') as fh:
             visual_cfg = json.load(fh)
 
         create_visuals(**visual_cfg)
 
-    
+    # API script targets
 
     if 'toxicity' in targets:
         '''
@@ -107,6 +107,8 @@ def main(targets):
         '''
         # 2nd parameter: name of cancelled individual
         polarityFunc(data, "name", cancellation_date)
+
+    # test target
 
     if 'test' in targets:
         out_dir = "./data/out/"

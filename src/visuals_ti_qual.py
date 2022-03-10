@@ -1,15 +1,12 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import itertools
 import collections
 import datetime 
 
-import nltk
 from nltk.corpus import stopwords
 import re
-import networkx
 
 from eda import convert_dates
 import datetime 
@@ -111,7 +108,7 @@ def create_visuals_qual(arg1, arg2, arg3, temp_dir, out_dir, test=False):
     
     misinfo_dfs = pd.read_csv(arg1)
     discrim_dfs = pd.read_csv(arg2)
-    assualt_dfs = pd.read_csv(arg2)
+    assualt_dfs = pd.read_csv(arg3)
 
     misinfo_dfs, discrim_dfs, assualt_dfs = preprocess_ti_df(misinfo_dfs, discrim_dfs, assualt_dfs, "14d", test)
     

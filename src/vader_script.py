@@ -1,7 +1,4 @@
-import os
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from polarity_script import convert_dates
 

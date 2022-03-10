@@ -68,22 +68,29 @@ def import_acc_data(base_dir, test=False):
 
     cancel_date = datetime.datetime(2022, 2, 6)
     if test:
-       maleKpop_cancel_date = cancel_date
-       femaleKpop_cancel_date = cancel_date
-       maleHH_cancel_date = cancel_date
-       femaleHH_cancel_date = cancel_date
-       malePop_cancel_date = cancel_date
-       femalePop_cancel_date = cancel_date
+        # kpop dicts 
+        male_kpop_dict = tweet_helper_func(base_dir, male_kpop_list, cancel_date)
+        female_kpop_dict = tweet_helper_func(base_dir, female_kpop_list, cancel_date)
 
-    # kpop dicts 
-    male_kpop_dict = tweet_helper_func(base_dir, male_kpop_list, maleKpop_cancel_date)
-    female_kpop_dict = tweet_helper_func(base_dir, female_kpop_list, femaleKpop_cancel_date)
+        # hiphop dicts
+        male_hiphop_dict = tweet_helper_func(base_dir, male_hiphop_list, cancel_date)
+        female_hiphop_dict = tweet_helper_func(base_dir, female_hiphop_list, cancel_date)
 
-    male_hiphop_dict = tweet_helper_func(base_dir, male_hiphop_list, maleHH_cancel_date)
-    female_hiphop_dict = tweet_helper_func(base_dir, female_hiphop_list, femaleHH_cancel_date)
+        # pop dicts
+        male_pop_dict = tweet_helper_func(base_dir, male_pop_list, cancel_date)
+        female_pop_dict = tweet_helper_func(base_dir, female_pop_list, cancel_date)
+    else:
+        # kpop dicts 
+        male_kpop_dict = tweet_helper_func(base_dir, male_kpop_list, maleKpop_cancel_date)
+        female_kpop_dict = tweet_helper_func(base_dir, female_kpop_list, femaleKpop_cancel_date)
 
-    male_pop_dict = tweet_helper_func(base_dir, male_pop_list, malePop_cancel_date)
-    female_pop_dict = tweet_helper_func(base_dir, female_pop_list, femalePop_cancel_date)
+        # hiphop dicts
+        male_hiphop_dict = tweet_helper_func(base_dir, male_hiphop_list, maleHH_cancel_date)
+        female_hiphop_dict = tweet_helper_func(base_dir, female_hiphop_list, femaleHH_cancel_date)
+
+        # pop dicts
+        male_pop_dict = tweet_helper_func(base_dir, male_pop_list, malePop_cancel_date)
+        female_pop_dict = tweet_helper_func(base_dir, female_pop_list, femalePop_cancel_date)
 
     return [male_kpop_dict, female_kpop_dict, 
             male_hiphop_dict, female_hiphop_dict, 
@@ -142,5 +149,5 @@ def import_main_data(genre1_dir, genre2_dir, genre3_dir, test=False):
             female_pop_dict, femalePop_cancel_date) 
 
     return [male_kpop_dict, female_kpop_dict, 
-            male_hiphop_dict, female_hiphop_dict, 
-            male_pop_dict, female_pop_dict]
+        male_hiphop_dict, female_hiphop_dict, 
+        male_pop_dict, female_pop_dict]

@@ -1,13 +1,5 @@
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import itertools
-import collections
-
-import nltk
-from nltk.corpus import stopwords
-import re
 # import networkx
 
 import datetime
