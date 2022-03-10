@@ -66,8 +66,7 @@ def main(targets):
     # rq2 - background of artist
       
     if 'background' in targets:
-        # change metric in params:
-        # severe_toxicity, insult, Compound, Negative
+        # change metric in params: severe_toxicity, insult
         with open('config/background-params.json') as fh:
             background_cfg = json.load(fh)
 
