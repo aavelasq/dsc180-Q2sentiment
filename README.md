@@ -52,16 +52,16 @@ and [Textblob](https://textblob.readthedocs.io/en/dev/api_reference.html).
 
 - To generate results for first sub-question: 
     - run `python run.py data typefOfIssue`
-        - Saves dataframe with type of issue data to `data\out`
+        - Saves dataframes with type of issue data to `data\temp\rq1_type`
     - run `python run.py visuals_ti`
-        - Saves type of issue visualizations to `data\out`
+        - Saves type of issue visualizations to `data\out\rq1_type`
 
 - To generate results for second sub-question: run `python run.py data background`
-    - Saves background dataframe to `data\temp`
-    - Saves background visualizations to `data\out`
+    - Saves background dataframes to `data\temp\rq_bg2`
+    - Saves background visualizations to `data\out\rq_bg2`
 
 - To generate results for third sub-question: 
     - run `python run.py data parasocial`
-        - Saves dataframe with parasocial data to `data\out`
+        - Saves dataframes with parasocial data to `data\temp\rq3_ps`
     - run `python run.py visuals`
-        - Saves parasocial visualizations to `data\out`
+        - Saves parasocial visualizations to `data\out\rq3_ps`
