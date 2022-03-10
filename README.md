@@ -16,13 +16,13 @@ To measure sentiment, we utilized the
 - To run the project using test data: run `python run.py test`
 
 - To scrape Twitter data: run `python getTweets.py`
-    - To change artist and timeframe of tweets, change the query
-    - In order to run this script, must obtain a valid Twitter API Key from Twitter
-    parameters within the `twitter_scraper function`
-    - Saves scraped twitter data to `data\raw`
+    - In order to run this script, must obtain valid Twitter API keys and save to a 
+    file named `twitterkeys.py`
+    - To change artist and timeframe of tweets, change the query attribute in the `query_params` variable
+    - Saves scraped Twitter data with columns `id, text, author_id, created_at` to `data\raw`
 
 - To run the project using real data: run `python run.py data`
-    - This calls `etl.py` and retrivies data stored `data\temp` folders. The directory where data is stored can be changed in `data-params.json`
+    - This calls `etl.py` and retrieves data stored in `data\temp` folders. The directory where data is stored can be changed in `data-params.json`
 
 - The different sentiment API and library scripts are found in `run.py`.
     - To run Google Perpsective API script on Twitter data: run 
@@ -39,7 +39,7 @@ To measure sentiment, we utilized the
 
 - To calculate some exploratory statistics and visualizations: run
     `python run.py data eda`
-    - Saves a dataframe of the number of tweets collected per day 
+    - Saves a dataframe containing the number of tweets collected per day 
     to `data\out`
     - Saves visualizations of user activity, toxicity, and polarity over time to `data\out`
 
@@ -49,16 +49,16 @@ To measure sentiment, we utilized the
 
 - To generate results for first sub-question (type of issue): 
     - run `python run.py data typefOfIssue`
-        - Saves dataframes with type of issue data to `data\temp\rq1_type`
+        - Saves dataframes to `data\temp\rq1_type`
     - run `python run.py visuals_ti`
-        - Saves type of issue visualizations to `data\out\rq1_type`
+        - Saves visualizations to `data\out\rq1_type`
 
 - To generate results for second sub-question (background of artist): run `python run.py data background`
-    - Saves background dataframes to `data\temp\rq_bg2`
-    - Saves background visualizations to `data\out\rq_bg2`
+    - Saves dataframes to `data\temp\rq_bg2`
+    - Saves visualizations to `data\out\rq_bg2`
 
 - To generate results for third sub-question (parasocial relationships): 
     - run `python run.py data parasocial`
-        - Saves dataframes with parasocial data to `data\temp\rq3_ps`
+        - Saves dataframes to `data\temp\rq3_ps`
     - run `python run.py visuals`
-        - Saves parasocial visualizations to `data\out\rq3_ps`
+        - Saves visualizations to `data\out\rq3_ps`
